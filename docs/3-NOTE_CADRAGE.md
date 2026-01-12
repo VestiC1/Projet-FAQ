@@ -113,7 +113,7 @@ flowchart LR
 
 	C["**Recherche Sémantique**<br>Corpus FAQ"]
 	F[*Réponse*]
-	G["**Prompt Engineering**<br/>*Question + Corpus*"]
+	G["**Prompt Engineering**<br/>*Question + Documents*"]
 ```
 
 
@@ -141,7 +141,7 @@ flowchart LR
 
 	C["**Recherche Sémantique**<br>Corpus FAQ"]
 	F[*Réponse*]
-	G["**Prompt Engineering**<br/>*Question + Corpus*"]
+	G["**Prompt Engineering**<br/>*Question + Documents*"]
 ```
 
 ---
