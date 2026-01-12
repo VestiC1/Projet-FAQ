@@ -1,8 +1,8 @@
 # Note de Cadrage - Projet FAQ Intelligent
 
-**Étudiant(s)** : [Nom(s) à compléter]
+**Étudiant(s)** : Steve Dos Santos, Jonathan Caillaux
 
-**Date** : [Date]
+**Date** : 12/01/2026
 
 **Version** : 1.0
 
@@ -12,27 +12,52 @@
 
 ### 1.1 Contexte du projet
 
-[Résumer en quelques phrases le contexte client et le besoin exprimé]
+La Communauté de Communes Val de Loire Numérique a solicité ***DataPublic Solutions*** dans le but de moderniser sa plateforme de service citoyen en mettant en place une solution IA permettant d'automatiser 
 
-> Aide : Relire le brief projet et reformuler avec vos propres mots.
+Vous êtes développeur·se IA au sein de ***DataPublic Solutions***, une entreprise spécialisée dans la transformation numérique des collectivités territoriales.
+
+La ***Communauté de Communes Val de Loire Numérique*** vous sollicite pour moderniser son service d'accueil citoyen. Actuellement, les agents passent 60% de leur temps à répondre aux mêmes questions récurrentes sur les démarches administratives (état civil, urbanisme, déchets, transports...).
+
+Le client souhaite mettre en place un ***assistant intelligent*** capable de répondre automatiquement aux questions des citoyens, accessible via une API REST qui sera ensuite intégrée au site web de la collectivité.
 
 ### 1.2 Objectifs du projet
 
 **Objectif principal** :
-[À compléter]
+Concevoir, développer et déployer une API d'assistance FAQ intégrant un LLM, en suivant une démarche rigoureuse et stratégique pour déterminer l'approche technique la plus adaptée.
 
 **Objectifs secondaires** :
-- [ ] [Objectif 1]
-- [ ] [Objectif 2]
-- [ ] [Objectif 3]
+
+1. **Benchmark** : Effectuer un travail de veille technique pour identifier les différentes solutions IA ainsi qu'un protocol de benchmark. 
+
+2. **Recommandation** : Choix de la solution technique 
+3. **Implémentation** : Développement de la solution IA 
+4. **Industrialisation** : Mise en place des tests automatisés et pipeline CI/CD
+5. **Documentation** : Produire une documentation technique exploitable
 
 ### 1.3 Périmètre
 
 **Dans le périmètre** :
-- [Lister les fonctionnalités incluses]
+
+Un assistant intelligent doit être mis en place afin d'automatiser la réponse aux questions de citoyens concernant les catégories suivante :
+
+* État civil
+* Urbanisme
+* Déchets environnement
+* Transports
+* Petite-enfance
+* Social solidarité
+* Vie associative
+* Élections
+* Logement
+* Culture_sport
+* Fiscalité
+* Eau assainissement
+
+Pour cela un service d'IA sera exposé par un back-end de type API REST développé en Python 3.10+. Des outils de monitoring d'application seront mis en place afin de contrôler la bonne santé du service IA ainsi que des différentes infrastructures mises en jeu.
 
 **Hors périmètre** :
-- [Lister les fonctionnalités exclues]
+
+Afin de palier à d'éventuelles contraintes budgétaire et de violation de la protection des données, aucune solution propriétaire (OpenAI, Anthropic, ...) ou de type cloud (Google Cloud, AWS, Azure...) ne sera retenue.  Bien que la priorité soit le développement d'une solution back-end (API REST) pour l'exposition du service IA, une solution front-end de type application web sera développée à des fins de démonstration. En revanche aucun framework python (Streamlit, Gradio, Taïpaï) ne sera sélectioné.
 
 ---
 
@@ -41,39 +66,62 @@
 ### 2.1 Stratégie A - LLM seul
 
 **Principe** :
-[Expliquer en vos propres mots comment fonctionne cette stratégie]
+Cette stratégie consiste à utiliser un LLM pour rédiger une réponse en donnant
 
 **Avantages attendus** :
+
 - 
 
 **Inconvénients attendus** :
 - 
 
 **Schéma simplifié** :
-```
-Question → [???] → Réponse
+
+```mermaid
+flowchart LR
+	B --> C
+	A --> C
+	C -- **LLM** --> E
+	A[*Question*]
+	B[**Corpus FAQ**]
+	C["**Prompt Engineering**<br/>*Question + Corpus*"]
+	E[*Réponse*]
 ```
 
-### 2.2 Stratégie B - Recherche sémantique + LLM
+### 2.2 Stratégie B - Q&A générative
 
 **Principe** :
-[Expliquer en vos propres mots comment fonctionne cette stratégie]
+Cette approche est aussi appelée Q&A génératif**/**RAG. Elle consiste à effectuer une recherche sémantique pour identifier les documents ayant un contenu sémantique proche de la question posée, i.e. les documents les plus susceptibles de contenir la réponse à la question posée. Ensuite, ces documents ainsi que la question sont fournis à un LLM qui génère une réponse.
 
 **Avantages attendus** :
+
 - 
 
 **Inconvénients attendus** :
 - 
 
 **Schéma simplifié** :
+
+```mermaid
+flowchart LR
+	A -->C
+	C -- *Documents* --> G
+
+	A --> G
+	G -- **LLM**-->F
+	A[*Question*]
+
+	C["**Recherche Sémantique**<br>Corpus FAQ"]
+	F[*Réponse*]
+	G["**Prompt Engineering**<br/>*Question + Corpus*"]
 ```
-Question → [???] → [???] → Réponse
-```
+
+
 
 ### 2.3 Stratégie C - Q&A extractif
 
 **Principe** :
-[Expliquer en vos propres mots comment fonctionne cette stratégie]
+Cette approche consiste à effectuer une recherche sémantique pour identifier les documents ayant un contenu sémantique proche de la question posée, i.e. les documents les plus susceptibles de contenir la réponse à la question posée. Ensuite**,** ces documents sont donnés en tant que contexte à un modèle de type Q&A extractif pour extraire la réponse à la question depuis le contexte fourn**i** par la recherche sémantique.
 
 **Avantages attendus** :
 - 
@@ -82,8 +130,18 @@ Question → [???] → [???] → Réponse
 - 
 
 **Schéma simplifié** :
-```
-Question → [???] → [???] → Réponse
+```mermaid
+flowchart LR
+	A -->C
+	C -- *Documents* --> G
+
+	A --> G
+	G -- **Q&A Extractor**-->F
+	A[*Question*]
+
+	C["**Recherche Sémantique**<br>Corpus FAQ"]
+	F[*Réponse*]
+	G["**Prompt Engineering**<br/>*Question + Corpus*"]
 ```
 
 ---
@@ -94,7 +152,7 @@ Question → [???] → [???] → Réponse
 
 | Composant | Technologie choisie | Justification |
 |-----------|---------------------|---------------|
-| Langage | Python 3.x | |
+| Langage | Python 3.10+ | |
 | Framework API | | |
 | LLM | | |
 | Embeddings | | |
