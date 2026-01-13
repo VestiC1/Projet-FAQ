@@ -70,10 +70,13 @@ Cette stratégie consiste à utiliser un LLM pour rédiger une réponse en donna
 
 **Avantages attendus** :
 
-- 
+- Simplicité 
 
 **Inconvénients attendus** :
-- 
+- Tous l'ensemble de la FAQ doit figurer dans le contexte 
+- Ne scale pas
+- Les informations nécessaires pour répondre à la question peuvent être noyés 
+- Hallucinations potentielles du à l'IA 
 
 **Schéma simplifié** :
 
@@ -91,14 +94,17 @@ flowchart LR
 ### 2.2 Stratégie B - Q&A générative
 
 **Principe** :
-Cette approche est aussi appelée Q&A génératif**/**RAG. Elle consiste à effectuer une recherche sémantique pour identifier les documents ayant un contenu sémantique proche de la question posée, i.e. les documents les plus susceptibles de contenir la réponse à la question posée. Ensuite, ces documents ainsi que la question sont fournis à un LLM qui génère une réponse.
+Cette approche est aussi appelée Q&A génératif/RAG. Elle consiste à effectuer une recherche sémantique pour identifier les documents ayant un contenu sémantique proche de la question posée, i.e. les documents les plus susceptibles de contenir la réponse à la question posée. Ensuite, ces documents ainsi que la question sont fournis à un LLM qui génère une réponse.
 
 **Avantages attendus** :
 
-- 
+- Allègement du contexte LLM (les informations sont filtrées)
+- Minimisation du risque d’hallucination
 
 **Inconvénients attendus** :
-- 
+
+- Hallucinations potentielles
+- Mise à jour de la FAQ moins trivial
 
 **Schéma simplifié** :
 
@@ -124,10 +130,12 @@ flowchart LR
 Cette approche consiste à effectuer une recherche sémantique pour identifier les documents ayant un contenu sémantique proche de la question posée, i.e. les documents les plus susceptibles de contenir la réponse à la question posée. Ensuite**,** ces documents sont donnés en tant que contexte à un modèle de type Q&A extractif pour extraire la réponse à la question depuis le contexte fourn**i** par la recherche sémantique.
 
 **Avantages attendus** :
-- 
+- Allègement du contexte LLM (les informations sont filtrées)
+- Pas d'hallucinations
 
 **Inconvénients attendus** :
-- 
+- Mise à jour de la FAQ moins trivial
+- Réponse pas rédigée
 
 **Schéma simplifié** :
 ```mermaid
@@ -153,18 +161,18 @@ flowchart LR
 | Composant | Technologie choisie | Justification |
 |-----------|---------------------|---------------|
 | Langage | Python 3.10+ | |
-| Framework API | | |
-| LLM | | |
-| Embeddings | | |
-| Tests | | |
-| CI/CD | | |
+| Framework API | FastAPI | |
+| LLM | Hugginface inference API | |
+| Embeddings | Hugginface | |
+| Tests | Pytest | Framework state of the |
+| CI/CD | GitHub action | |
 
 ### 3.2 Modèles IA identifiés
 
 | Usage | Modèle | Source | Raison du choix |
 |-------|--------|--------|-----------------|
-| LLM (génération) | | HuggingFace | |
-| Embeddings | | | |
+| LLM (génération) | Mistral 7B | HuggingFace | |
+| Embeddings | Sentence Transformer | | |
 | Q&A extractif | | | |
 
 ---
