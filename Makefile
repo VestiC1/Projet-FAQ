@@ -9,3 +9,6 @@ mistral:
 
 providers:
 	python -m scripts.providers_mistral
+
+rag:
+	python -m src.rag
