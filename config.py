@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from pathlib import Path
 
-# Project ROOt directory
+# Project root directory
 ROOT = Path(__file__).parent
 
 # Secrets loading
