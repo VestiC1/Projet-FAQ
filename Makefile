@@ -12,3 +12,6 @@ providers:
 
 rag:
 	python -m src.rag
+
+strata:
+	python -m src.strategies.strategya
