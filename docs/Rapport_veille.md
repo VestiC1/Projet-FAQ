@@ -121,5 +121,3 @@ https://www.unifiedaihub.com/blog/on-premise-llms-vs-cloud-apis-when-to-run-your
 ​
 Explique pourquoi les APIs cloud ajoutent systématiquement une latence réseau et donne des ordres de grandeur de débit possibles pour des LLM open source bien optimisés on-prem (50–100 tokens/s selon le matériel).
 ​
-
-Si tu veux, le prochain pas peut être de construire à partir de ces trois sources un petit tableau comparatif coût/latence local vs API pour 1–2 modèles (par ex. Mistral 7B et un modèle plus petit).
