@@ -9,13 +9,11 @@ def compute_embeddings(model, texts: list[str]) -> list[list[float]]:
 
 def data_extract(json_data):
 
-    return pd.DataFrame(
-        {
-            "id" : [ doc['id'] for doc in json_data['faq']],
-            "question" : [ doc['question'] for doc in json_data['faq']],
-            "answer" : [ doc['answer'] for doc in json_data['faq']],
-        }
-    )
+    return pd.DataFrame({
+        "id" : [ doc['id'] for doc in json_data['faq']],
+        "question" : [ doc['question'] for doc in json_data['faq']],
+        "answer" : [ doc['answer'] for doc in json_data['faq']]
+    })
 
 def main():
     faq_data = load_faq()
