@@ -1,4 +1,4 @@
-from ..config import HF_TOKEN
+from config import HF_TOKEN
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import requests
 

@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from pathlib import Path
+import os
 
 # Project root directory
 ROOT = Path(__file__).parent
@@ -13,3 +14,9 @@ DATA_DIR = ROOT / "data"
 # Data file paths
 FAQ_PATH    = DATA_DIR / "faq-base-6964b97cf0c25947575840.json"
 GOLDEN_PATH = DATA_DIR / "golden-set-6964b9874cff1935078155.json"
+
+# Expose les variables nécessaires
+HF_TOKEN = os.getenv("HF_TOKEN")
+
+if not HF_TOKEN:
+    raise ValueError("Le token Hugging Face (HF_TOKEN) n'est pas défini dans le fichier .env.")
