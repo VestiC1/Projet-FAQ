@@ -23,9 +23,14 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 if not HF_TOKEN:
     raise ValueError("Le token Hugging Face (HF_TOKEN) n'est pas défini dans le fichier .env.")
 
+
 # Embedding model name
 embd_model_name = "sentence-transformers/all-MiniLM-L6-v2"
 
 # RAG threshold
 RAG_THR = 0.45
 RAG_K = 5
+
+
+# Model
+LLMNAME="mistralai/Mistral-7B-Instruct-v0.2"
