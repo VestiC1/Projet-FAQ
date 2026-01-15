@@ -3,6 +3,7 @@ from scripts.data_loader import load_golden
 from config import DATA_DIR, system_prompt_template, RAG_K, embd_model_name, qna_model_name
 import time
 import json
+from pprint import pprint
 
 def main():
     
@@ -24,24 +25,26 @@ def main():
         qna_model_name=qna_model_name
     )
     print("Évaluation des stratégies sur le golden set...")
-    
+
     questions = []
 
     golden_data = load_golden()['golden_set']
 
-    for item in golden_data:
+    for i, item in enumerate(golden_data):
         q = item['question']
-        print("Q:", q)
+        print(f"Q{i}:", q)
 
         answers = {}
 
         for strat, name in zip([strat_a, strat_b, strat_c], ['A', 'B', 'C']):
             
             answers[name] = strat.answer(question=q)
-        print("A:", answers)
+
+        print("A:", end="")
+        pprint(answers)
         questions.append({
             'question': q,
-            'answer': answers
+            'answers': answers
         })
         time.sleep(3)
 
