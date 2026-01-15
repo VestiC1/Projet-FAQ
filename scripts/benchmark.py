@@ -1,6 +1,6 @@
 from src.utils import load_golden, make_strategy_a, make_strategy_b, make_strategy_c
 
-from config import BENACHLMARK_RESULTS    
+from config import BENCHMARK_RESULTS    
 import pandas as pd
 from pprint import pprint
 
@@ -74,9 +74,9 @@ def main():
 
         
 
-    print(f"Sauvegarde des réponses dans {BENACHLMARK_RESULTS}...")
+    print(f"Sauvegarde des réponses dans {BENCHMARK_RESULTS}...")
 
-    pd.DataFrame(df).to_parquet(BENACHLMARK_RESULTS, index=False, schema=schema)
+    pd.DataFrame(df).to_parquet(BENCHMARK_RESULTS, index=False, schema=schema)
 
 if __name__ == "__main__":
     main()

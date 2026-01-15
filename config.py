@@ -70,4 +70,4 @@ system_prompt_template = {
 }
 
 # Benchmark results path
-BENACHLMARK_RESULTS = DATA_DIR / "benchmark_results.parquet"
+BENCHMARK_RESULTS = DATA_DIR / "benchmark_results.parquet"
