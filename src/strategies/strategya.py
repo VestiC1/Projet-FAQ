@@ -28,7 +28,7 @@ def main():
             'question': q,
             'answer': str(result)
         })
-        time.sleep(1)  # Pause d'une seconde entre chaque itération
+        time.sleep(1) 
     with open(DATA_DIR / 'llm_answers.json', 'w', encoding='utf-8') as f:
         json.dump(answers, f, ensure_ascii=False, indent=4)
 
