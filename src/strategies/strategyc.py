@@ -1,22 +1,24 @@
-from src.rag import TinyRag
-from src.qna import QnAExtractor
-from config import qna_model_name, embd_model_name, RAG_K
+from src.models import TinyRag, QnAExtractor
+from config import qna_model_name, embd_model_name, RAG_K, FAQ_VEC
+from pathlib import Path
+from .abstract import Strategy
 
-class StrategyC:
+class StrategyC(Strategy):
 
-    def __init__(self, vec_model_name: str, top_k: int, qna_model_name: str, *args, **kwargs):
+    def __init__(self, corpus: Path, vec_model_name: str, top_k: int, qna_model_name: str, *args, **kwargs):
+        super().__init__(strategy_name='Strategy_C')
 
-        self.rag = TinyRag(model_name=vec_model_name, k=top_k)
+        self.rag = TinyRag(model_name=vec_model_name, corpus=corpus, k=top_k)
         self.qna = QnAExtractor(model_name=qna_model_name)
 
-    def answer(self, question: str) -> str:
+    def _answer(self, question: str) -> str:
 
         documents = self.rag.search(text=question)
         context_text = self._build_context(documents=documents)
 
-        answer = self.qna.reply(question=question, context=context_text)
+        answer = self.qna.predict(question=question, context=context_text)
 
-        return answer['answer']
+        return answer['answer'].strip()
     
     def _build_context(self, documents) -> str:
         context_text = "\n----------".join([f"""
@@ -31,6 +33,7 @@ class StrategyC:
 def main():
 
     strat = StrategyC(
+        corpus=FAQ_VEC,
         vec_model_name=embd_model_name,
         top_k=RAG_K,
         qna_model_name=qna_model_name

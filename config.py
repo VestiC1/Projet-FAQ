@@ -68,3 +68,6 @@ system_prompt_template = {
 
     'C' : "{context}"
 }
+
+# Benchmark results path
+BENACHLMARK_RESULTS = DATA_DIR / "benchmark_results.parquet"
