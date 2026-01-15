@@ -1,15 +1,12 @@
 from src.llm import LLMChatCompletion
-from config import HF_TOKEN, LLMNAME, DATA_DIR
+from config import HF_TOKEN, LLMNAME, DATA_DIR, system_prompt_template
 from scripts.data_loader import load_golden
 import json
 import time
 
 
 def main():
-    system_prompt = """
-    Assistant IA de la Communauté de Communes Val de Loire Numérique. Réponds **uniquement** aux questions sur : état civil, urbanisme, déchets, transports, petite-enfance, social, vie associative, élections, logement, culture/sport, fiscalité, eau/assainissement.
-    Si la question est dans ce périmètre, réponds en 1-2 phrases max. Si hors-périmètre, réponds **uniquement** : "Ce sujet ne fait pas partie de mon périmètre."
-    """
+    system_prompt = system_prompt_template['A']
 
     llm = LLMChatCompletion(system_prompt=system_prompt, max_tokens=200)
 
@@ -28,7 +25,7 @@ def main():
             'question': q,
             'answer': str(result)
         })
-        time.sleep(1)  # Pause d'une seconde entre chaque itération
+        time.sleep(2) 
     with open(DATA_DIR / 'llm_answers.json', 'w', encoding='utf-8') as f:
         json.dump(answers, f, ensure_ascii=False, indent=4)
 

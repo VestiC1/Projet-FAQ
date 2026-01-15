@@ -28,7 +28,7 @@ class TinyRag:
 
         idx = np.argsort(-projected)[:self.k]
         
-        return self.corpus_df.iloc[idx][['question', 'answer']]
+        return self.corpus_df.iloc[idx][['id', 'question', 'answer', 'keywords']]
         
 
 

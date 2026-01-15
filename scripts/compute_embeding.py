@@ -20,7 +20,8 @@ def data_extract(json_data):
     return pd.DataFrame({
         "id" : [ doc['id'] for doc in json_data['faq']],
         "question" : [ doc['question'] for doc in json_data['faq']],
-        "answer" :   [ doc['answer'] for doc in json_data['faq']]
+        "answer" :   [ doc['answer'] for doc in json_data['faq']],
+        "keywords" : [ ", ".join(doc['keywords']) for doc in json_data['faq'] ],
     })
 
 def main():
@@ -28,7 +29,7 @@ def main():
     df = data_extract(faq_data)
     model_name = "sentence-transformers/all-MiniLM-L6-v2"
     model = SentenceTransformer(model_name)
-    df['embedding'] = df[['question', 'answer']].apply(lambda x : compute_embeddings(model, f"Question : {x['answer']} Réponse : {x['question']}"), axis=1)
+    df['embedding'] = df[['question', 'answer', 'keywords']].apply(lambda x : compute_embeddings(model, f"{x['question']} {x['answer']} {x['keywords']}"), axis=1)
     df.to_parquet(FAQ_VEC, index=False)
 
 if __name__ == "__main__":
