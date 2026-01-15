@@ -1,5 +1,4 @@
 from src.utils import load_golden, make_strategy_a, make_strategy_b, make_strategy_c
-
 from config import BENCHMARK_RESULTS    
 import pandas as pd
 from pprint import pprint
@@ -8,18 +7,7 @@ import pyarrow as pa
 
 import time
 
-def main():
-
-    print("Configuration des stratégies...")
-
-    strat_a = make_strategy_a()
-    strat_b = make_strategy_b()
-    strat_c = make_strategy_c()
-
-    strategies = [strat_a, strat_b, strat_c]
-
-    print("Évaluation des stratégies sur le golden set...\n")
-
+def initialize_dataframe(strategies):
     df = {
         'question': [],
         "faq_id_reference": [],
@@ -43,24 +31,40 @@ def main():
             for key in (s.strategy_name, f"{s.strategy_name}_time")
         }
     })
+    return df, schema
+
+def main():
+
+    print("Configuration des stratégies...")
+
+    strat_a = make_strategy_a()
+    strat_b = make_strategy_b()
+    strat_c = make_strategy_c()
+
+    strategies = [strat_a, strat_b, strat_c]
+
+    df, schema = initialize_dataframe(strategies)
+
+    print("Évaluation des stratégies sur le golden set...\n")
+
 
     golden_data = load_golden()['golden_set']
 
     for i, item in enumerate(golden_data):
-        q = item['question']
+        question = item['question']
 
-        df['question'].append(q)
+        df['question'].append(question)
         df['faq_id_reference'].append([item['faq_id_reference']] if isinstance(item['faq_id_reference'], str) else item['faq_id_reference'])
         df['expected_keywords'].append(item['expected_keywords'])
         df['expected_answer_summary'].append(item['expected_answer_summary'])
 
-        print(f"Q{i}:", q)
+        print(f"Q{i}:", question)
 
         answers = {}# For display purposes
 
-        for strategy in [strat_a, strat_b, strat_c]:
+        for strategy in strategies:
 
-            answers[strategy.strategy_name] = strategy.answer(question=q)
+            answers[strategy.strategy_name] = strategy.answer(question=question)
 
             df[strategy.strategy_name].append(answers[strategy.strategy_name])
             df[f"{strategy.strategy_name}_time"].append(strategy.last_ellapsed_time)
