@@ -44,7 +44,7 @@ system_prompt_template = {
         
         **Règles :**
         - Langue : français uniquement.
-        - Réponds en 1-2 phrases maximum. 
+        - Si la question est dans ce périmètre, répond en 1-2 phrases maximum. 
         - Si hors-périmètre, réponds **uniquement** : "Ce sujet ne fait pas partie de mon périmètre."
     """,
     'B' : """
@@ -66,5 +66,5 @@ system_prompt_template = {
         Références [id1, id2, ...] (documents utiliséssi applicable)
     """,
 
-    'C' : "%s"
+    'C' : "{context}"
 }

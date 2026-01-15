@@ -21,3 +21,6 @@ stratb:
 
 stratc:
 	python -m src.strategies.strategyc
+
+benchmmark_strats:
+	python -m scripts.benchmark
