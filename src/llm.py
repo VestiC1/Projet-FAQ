@@ -19,7 +19,8 @@ class LLMChatCompletion:
 
         return self.client.chat_completion(
             messages=self._build_message(prompt=prompt), 
-            max_tokens=self.max_tokens
+            max_tokens=self.max_tokens,
+            temperature=0
         )
 
 
