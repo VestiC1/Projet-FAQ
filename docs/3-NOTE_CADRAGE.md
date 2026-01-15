@@ -171,7 +171,7 @@ flowchart LR
 | Usage | Modèle | Source | Raison du choix |
 |-------|--------|--------|-----------------|
 | LLM (génération) | Mistral 7B | HuggingFace | Modèle open source et Français(possibilité d'utilisation en locale). |
-| Embeddings | Sentence Transformer/all-mini-v6 | Huggingface | Périmètre d'action suffisamment restreint pour utiliser des embeddings d'une taille relativement petite (386) et d'utiliser une solution locale. |
+| Embeddings | Sentence Transformer/paraphrase-multilingual-MiniLM-L12-v2 | Huggingface | Périmètre d'action suffisamment restreint pour utiliser des embeddings d'une taille relativement petite (384) et d'utiliser une solution locale. |
 | Q&A extractif | [mdeberta-v3-base-squad2](https://huggingface.co/timpal0l/mdeberta-v3-base-squad2) | Huggingface | Top leaderboard HF. Modèle léger et français. Bonus : modèle multi-langues. |
 
 ---

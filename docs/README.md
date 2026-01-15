@@ -1,1 +1,1 @@
-# Documentations
+# Docs folder
