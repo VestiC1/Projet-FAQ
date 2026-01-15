@@ -66,5 +66,5 @@ system_prompt_template = {
         Références [id1, id2, ...] (documents utiliséssi applicable)
     """,
 
-    'C' : "%s"
+    'C' : "{context}"
 }
