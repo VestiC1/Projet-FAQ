@@ -27,7 +27,6 @@ class LLMChatCompletion:
     def _build_message(self, prompt, context: str = None):
         first_msg  = self.messages
         if context is not None:
-            print("Filling system prompt with context...")
             # Then system prompt is a template
             try :
                 first_msg[0]["content"] = self.messages[0]['content'].format(context=context)

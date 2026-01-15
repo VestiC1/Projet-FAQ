@@ -6,6 +6,8 @@ import json
 
 def main():
     
+    print("Configuration des stratégies...")
+
     strat_a = StrategyA(
         system_prompt=system_prompt_template['A'],
         max_tokens=200
@@ -21,7 +23,8 @@ def main():
         top_k=RAG_K,
         qna_model_name=qna_model_name
     )
-
+    print("Évaluation des stratégies sur le golden set...")
+    
     questions = []
 
     golden_data = load_golden()['golden_set']
@@ -41,6 +44,8 @@ def main():
             'answer': answers
         })
         time.sleep(3)
+
+    print(f"Sauvegarde des réponses dans {DATA_DIR/'llm_answers.json'}...")
 
     with open(DATA_DIR / 'llm_answers.json', 'w', encoding='utf-8') as f:
         json.dump(questions, f, ensure_ascii=False, indent=4)
