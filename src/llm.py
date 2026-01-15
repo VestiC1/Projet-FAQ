@@ -20,8 +20,8 @@ class LLMChatCompletion:
         return self.client.chat_completion(
             messages=self._build_message(prompt=prompt), 
             max_tokens=self.max_tokens,
-            temperature=0
-        )
+            temperature=0.1
+        ).choices[0].message['content'].strip()
 
 
     def _build_message(self, prompt):

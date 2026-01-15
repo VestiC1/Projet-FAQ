@@ -15,3 +15,9 @@ rag:
 
 strata:
 	python -m src.strategies.strategya
+
+stratb:
+	python -m src.strategies.strategyb
+
+stratc:
+	python -m src.strategies.strategyc
