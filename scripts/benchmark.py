@@ -1,58 +1,86 @@
-from src.strategies import StrategyA, StrategyB, StrategyC
-from scripts.data_loader import load_golden
-from config import DATA_DIR, system_prompt_template, RAG_K, embd_model_name, qna_model_name
-import time
-import json
+from src.utils import load_golden, make_strategy_a, make_strategy_b, make_strategy_c
+from config import BENCHMARK_RESULTS    
+import pandas as pd
 from pprint import pprint
 
+import pyarrow as pa
+
+import time
+
+def initialize_dataframe(strategies):
+    df = {
+        'question': [],
+        "faq_id_reference": [],
+        "expected_keywords": [],
+        "expected_answer_summary": [],
+        **{
+            key: []
+            for s in strategies
+            for key in (s.strategy_name, f"{s.strategy_name}_time")
+        }
+    }
+
+    schema = pa.schema({
+        'question': pa.string(),
+        "faq_id_reference": pa.list_(pa.string()),
+        "expected_keywords": pa.list_(pa.string()),
+        "expected_answer_summary": pa.string(),
+        **{
+            key: pa.float64() if 'time' in key else pa.string()
+            for s in strategies
+            for key in (s.strategy_name, f"{s.strategy_name}_time")
+        }
+    })
+    return df, schema
+
 def main():
-    
+
     print("Configuration des stratégies...")
 
-    strat_a = StrategyA(
-        system_prompt=system_prompt_template['A'],
-        max_tokens=200
-    )
-    strat_b = StrategyB(
-        system_prompt=system_prompt_template['B'], 
-        max_tokens=200, 
-        model_name=embd_model_name,
-        top_k=RAG_K
-    )
-    strat_c = StrategyC(
-        vec_model_name=embd_model_name,
-        top_k=RAG_K,
-        qna_model_name=qna_model_name
-    )
-    print("Évaluation des stratégies sur le golden set...")
+    strat_a = make_strategy_a()
+    strat_b = make_strategy_b()
+    strat_c = make_strategy_c()
 
-    questions = []
+    strategies = [strat_a, strat_b, strat_c]
+
+    df, schema = initialize_dataframe(strategies)
+
+    print("Évaluation des stratégies sur le golden set...\n")
+
 
     golden_data = load_golden()['golden_set']
 
     for i, item in enumerate(golden_data):
-        q = item['question']
-        print(f"Q{i}:", q)
+        question = item['question']
 
-        answers = {}
+        df['question'].append(question)
+        df['faq_id_reference'].append([item['faq_id_reference']] if isinstance(item['faq_id_reference'], str) else item['faq_id_reference'])
+        df['expected_keywords'].append(item['expected_keywords'])
+        df['expected_answer_summary'].append(item['expected_answer_summary'])
 
-        for strat, name in zip([strat_a, strat_b, strat_c], ['A', 'B', 'C']):
-            
-            answers[name] = strat.answer(question=q)
+        print(f"Q{i}:", question)
+
+        answers = {}# For display purposes
+
+        for strategy in strategies:
+
+            answers[strategy.strategy_name] = strategy.answer(question=question)
+
+            df[strategy.strategy_name].append(answers[strategy.strategy_name])
+            df[f"{strategy.strategy_name}_time"].append(strategy.last_ellapsed_time)
 
         print("A:", end="")
         pprint(answers)
-        questions.append({
-            'question': q,
-            'answers': answers
-        })
+        print("\n" + "-"*50 + "\n")
+
+        # Slow pace to avoid rate limits
         time.sleep(3)
 
-    print(f"Sauvegarde des réponses dans {DATA_DIR/'llm_answers.json'}...")
+        
 
-    with open(DATA_DIR / 'llm_answers.json', 'w', encoding='utf-8') as f:
-        json.dump(questions, f, ensure_ascii=False, indent=4)
+    print(f"Sauvegarde des réponses dans {BENCHMARK_RESULTS}...")
 
+    pd.DataFrame(df).to_parquet(BENCHMARK_RESULTS, index=False, schema=schema)
 
 if __name__ == "__main__":
     main()

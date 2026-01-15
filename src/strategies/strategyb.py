@@ -1,22 +1,22 @@
-from src.llm import LLMChatCompletion
-from src.rag import TinyRag
-from config import embd_model_name, RAG_K, system_prompt_template
-from src.strategies.abstract import StrategyAbstract
+from pathlib import Path
+from src.models import LLMChatCompletion, TinyRag
+from config import embd_model_name, RAG_K, system_prompt_template, LLMNAME, HF_TOKEN, FAQ_VEC
+from .abstract import Strategy
 
-class StrategyB(StrategyAbstract):
+class StrategyB(Strategy):
 
-    def __init__(self, system_prompt: str, max_tokens: int, model_name: str, top_k: int, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, hf_token: str, model_name: str, system_prompt: str, max_tokens: int, corpus:Path, vec_name: str, top_k: int, *args, **kwargs):
+        super().__init__(strategy_name='Strategy_B')
 
-        self.llm = LLMChatCompletion(system_prompt=system_prompt, max_tokens=max_tokens)
-        self.rag = TinyRag(model_name=model_name, k=top_k)
+        self.llm = LLMChatCompletion(hf_token=hf_token, model_name=model_name, system_prompt=system_prompt, max_tokens=max_tokens)
+        self.rag = TinyRag(model_name=vec_name, corpus=corpus, k=top_k)
 
-    def answer(self, question: str) -> str:
+    def _answer(self, question: str) -> str:
 
         documents = self.rag.search(text=question)
         context_text = self._build_context(documents=documents)
 
-        return self.llm.reply(prompt=question, context=context_text)
+        return self.llm.predict(prompt=question, context=context_text)
     
     def _build_context(self, documents) -> str:
         context_text = "\n----------".join([f"""
@@ -31,9 +31,12 @@ class StrategyB(StrategyAbstract):
 def main():
 
     strat = StrategyB(
+        hf_token=HF_TOKEN,
+        model_name=LLMNAME,
         system_prompt=system_prompt_template['B'],
         max_tokens=200,
-        model_name=embd_model_name,
+        corpus=FAQ_VEC,
+        vec_name=embd_model_name,
         top_k=RAG_K
     )
 

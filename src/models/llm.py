@@ -1,13 +1,11 @@
 from huggingface_hub import InferenceClient
-from config import HF_TOKEN, LLMNAME
+from .abstract import Model
 
+class LLMChatCompletion(Model):
+    def __init__(self, hf_token: str, model_name: str, system_prompt: str, max_tokens: int):
+        super().__init__(model_name=model_name)
 
-from huggingface_hub import InferenceClient
-
-class LLMChatCompletion:
-    def __init__(self, system_prompt, max_tokens):
-
-        self.client = InferenceClient(model=LLMNAME, token=HF_TOKEN)
+        self.client = InferenceClient(model=model_name, token=hf_token)
 
         self.max_tokens = max_tokens
 
@@ -15,12 +13,12 @@ class LLMChatCompletion:
             {"role": "system", "content": system_prompt}
         ]
 
-    def reply(self, prompt, context : str = None):
+    def predict(self, prompt, context : str = None):
 
         return self.client.chat_completion(
             messages=self._build_message(prompt=prompt, context=context), 
             max_tokens=self.max_tokens,
-            temperature=0.1
+            temperature=0.05
         ).choices[0].message['content'].strip()
 
 
