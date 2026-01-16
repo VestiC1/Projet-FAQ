@@ -197,11 +197,3 @@ Le système répond aux questions sur :
 
 - **Jonathan Caillaux**
 - **Steve Dos Santos**
-
-## Licence
-
-Ce projet a été réalisé dans le cadre d'une formation en développement IA.
-
----
-
-**Pour toute question** : Consultez la documentation dans `docs/` ou ouvrez une issue sur GitHub.
