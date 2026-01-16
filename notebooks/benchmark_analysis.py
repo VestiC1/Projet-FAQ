@@ -175,6 +175,7 @@ def _(metrics_JC):
 def _(metrics_JC, plt, radar_plot):
     df_norm_JC = (metrics_JC - metrics_JC.min()) / (metrics_JC.max() - metrics_JC.min())
     fig, ax = radar_plot(df_norm_JC)
+    plt.title('Compaison JC')
     plt.show()
     return
 
@@ -189,9 +190,9 @@ def _(mo):
 
 @app.cell
 def _(DATA_DIR, pd):
-    df_a_sd = pd.read_csv(DATA_DIR / 'annotation_a_SD.csv', index_col=0).describe().transpose()
-    df_b_sd = pd.read_csv(DATA_DIR / 'annotation_b_SD.csv', index_col=0).describe().transpose()
-    df_c_sd = pd.read_csv(DATA_DIR / 'annotation_c_SD.csv', index_col=0).describe().transpose()
+    df_a_sd = pd.read_csv(DATA_DIR / 'annotation_a_SDS.csv', index_col=0).describe().transpose()
+    df_b_sd = pd.read_csv(DATA_DIR / 'annotation_b_SDS.csv', index_col=0).describe().transpose()
+    df_c_sd = pd.read_csv(DATA_DIR / 'annotation_c_SDS.csv', index_col=0).describe().transpose()
     return df_a_sd, df_b_sd, df_c_sd
 
 
@@ -218,8 +219,14 @@ def _(metrics_SD):
 @app.cell
 def _(metrics_SD, plt, radar_plot):
     df_norm_SD = (metrics_SD - metrics_SD.min()) / (metrics_SD.max() - metrics_SD.min())
-    fig, ax = radar_plot(df_norm_SD)
+    fig2, ax2 = radar_plot(df_norm_SD)
+    plt.title('Comparaison SDS')
     plt.show()
+    return
+
+
+@app.cell
+def _():
     return
 
 
