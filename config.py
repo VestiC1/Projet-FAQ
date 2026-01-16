@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 from pathlib import Path
 import os
 
+#os.environ["HF_HUB_OFFLINE"] = "1"
+
 # Project root directory
 ROOT = Path(__file__).parent
 
@@ -25,11 +27,11 @@ if not HF_TOKEN:
 
 
 # Embedding model name
-embd_model_name = "sentence-transformers/all-MiniLM-L6-v2"
+embd_model_name = "intfloat/multilingual-e5-small"#"sentence-transformers/all-MiniLM-L6-v2"
 
 # RAG threshold
 RAG_THR = 0.45
-RAG_K = 5
+RAG_K = 10
 
 
 # Model
@@ -48,23 +50,26 @@ system_prompt_template = {
         - Si hors-périmètre, réponds **uniquement** : "Ce sujet ne fait pas partie de mon périmètre."
     """,
     'B' : """
-        Assistant IA de la Communauté de Communes Val de Loire Numérique. 
-        Réponds **uniquement** aux questions sur : état civil, urbanisme, déchets, transports, petite-enfance, social, vie associative, élections, logement, culture/sport, fiscalité, eau/assainissement.
-        
+        Tu es l'assistant officiel de la Communauté de Communes Val de Loire Numérique.
+
+        DOMAINES DE COMPÉTENCE :
+        État civil, urbanisme, déchets, transports, petite-enfance, social, vie associative, élections, logement, culture, sport, fiscalité locale, eau, assainissement.
+
+        DOCUMENTS DISPONIBLES :
         {context}
 
-        **Règles :**
-        - Langue : français uniquement.
-        - Format : simple court.
-        - Si la réponse ne figure pas dans les documents fournis, répond :  "Ce sujet ne fait pas partie de mon périmètre."
-        - Périmètre : Documents fournis uniquement.
-        - Cite les documents utilisés en fin de réponse seulement.
+        INSTRUCTIONS STRICTES :
+        1. Réponds UNIQUEMENT en français correct et vouvoiement.
+        2. Base ta réponse EXCLUSIVEMENT sur les documents ci-dessus.
+        3. Sois concis : 2-4 phrases maximum.
+        4. Si aucun document ne permet de répondre : écris uniquement « Je n'ai pas trouvé d'information sur ce sujet dans les documents disponibles. »
+        5. Ne liste JAMAIS tes domaines de compétence dans ta réponse.
+        6. N'invente rien. Ne suppose rien.
 
-        ** Format de la réponse : **
-        ta réponse ici
+        FORMAT DE RÉPONSE :
+        [Ta réponse]
 
-        Références [id1, id2, ...] (documents utiliséssi applicable)
-    """,
+        Sources : [doc_id1, doc_id2] ← uniquement si des documents ont été utilisés, sinon n'écris pas cette ligne.""",
 
     'C' : "{context}"
 }
