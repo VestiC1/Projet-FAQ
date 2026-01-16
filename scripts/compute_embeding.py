@@ -1,6 +1,6 @@
 from src.utils import load_faq
 from sentence_transformers import SentenceTransformer
-from config import FAQ_VEC
+from config import FAQ_VEC, embd_model_name
 import pandas as pd
 from pathlib import Path
 
@@ -20,9 +20,9 @@ def data_extract(json_data):
 def main():
     faq_data = load_faq()
     df = data_extract(faq_data)
-    model_name = "sentence-transformers/all-MiniLM-L6-v2"
+    model_name = embd_model_name
     model = SentenceTransformer(model_name)
-    df['embedding'] = df[['question', 'answer', 'keywords']].apply(lambda x : compute_embeddings(model, f"{x['question']} {x['answer']} {x['keywords']}"), axis=1)
+    df['embedding'] = df[['question', 'answer', 'keywords']].apply(lambda x : compute_embeddings(model, f"passage: {x['question']} {x['answer']} {x['keywords']}"), axis=1)
     df.to_parquet(FAQ_VEC, index=False)
 
 if __name__ == "__main__":

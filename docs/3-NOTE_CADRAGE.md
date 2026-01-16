@@ -64,7 +64,7 @@ Afin de palier à d'éventuelles contraintes budgétaire et de violation de la p
 ### 2.1 Stratégie A - LLM seul
 
 **Principe** :
-Cette stratégie consiste à utiliser l'ensemble de la FAQ en en contexte à un LLM pour rédiger une réponse.
+Cette stratégie consiste à paramétrer un LLM en lui fournissant un prompt système pour rédiger sa réponse.
 
 **Avantages attendus** :
 
@@ -80,12 +80,10 @@ Cette stratégie consiste à utiliser l'ensemble de la FAQ en en contexte à un 
 
 ```mermaid
 flowchart LR
-	B --> C
 	A --> C
 	C -- **LLM** --> E
 	A[*Question*]
-	B[**Corpus FAQ**]
-	C["**Prompt Engineering**<br/>*Question + Corpus*"]
+	C["**Prompt Engineering**<br/>*Question*"]
 	E[*Réponse*]
 ```
 

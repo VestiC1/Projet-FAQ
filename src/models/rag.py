@@ -21,11 +21,11 @@ class TinyRag(Model):
         self.k = k
     
     def search(self, text):
-        vector = compute_embeddings(model=self.model, texts=[text])
+        vector = compute_embeddings(model=self.model, texts=[f"query: {text}"])
         projected = self.corpus_vec @ vector[0].T
 
         idx = np.argsort(-projected)[:self.k]
-        
+        #print(self.corpus_df.iloc[idx][['id']])
         return self.corpus_df.iloc[idx][['id', 'question', 'answer', 'keywords']]
     
     def load_embeddings(self, path : Path) -> pd.DataFrame:
