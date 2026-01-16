@@ -142,7 +142,7 @@ def _(np, pd):
             'Exactitude' : 0.3,
             'Pertinence' : 0.2,
             'No Hallucination' : 0.2, 
-            'Complexité' : 0.15,
+            'Simplicité' : 0.15,
             'Latence' : 0.15,
         }
         df_gs = pd.DataFrame({
@@ -189,7 +189,7 @@ def _():
 def _(df_a_jc, df_b_jc, df_c_jc, df_inf_time, keys, np, pd, target_latency):
     metrics_JC = pd.concat([df_a_jc['mean'], df_b_jc['mean'], df_c_jc['mean']], axis=1, keys=keys)
     metrics_JC.loc['No Hallucination'] = 1 - metrics_JC.loc['Hallucination']
-    metrics_JC.loc['Complexité'] = 1- np.array([1, 3, 2])/3 
+    metrics_JC.loc['Simplicité'] = 1- np.array([1, 3, 2])/3 
     metrics_JC.loc['Pertinence'] = metrics_JC.loc['Pertinence'] / 2
     metrics_JC.loc['P75'] = df_inf_time['75%'].to_numpy()
     metrics_JC.loc['Latence'] = np.clip(target_latency / metrics_JC.loc['P75'],0,  1)
@@ -255,7 +255,7 @@ def _(df_a_sd):
 def _(df_a_sd, df_b_sd, df_c_sd, df_inf_time, keys, np, pd, target_latency):
     metrics_SD = pd.concat([df_a_sd['mean'], df_b_sd['mean'], df_c_sd['mean']], axis=1, keys=keys)
     metrics_SD.loc['No Hallucination'] = 1 - metrics_SD.loc['Hallucination']
-    metrics_SD.loc['Complexité'] = 1- np.array([1, 3, 2])/3 
+    metrics_SD.loc['Simplicité'] = 1- np.array([1, 3, 2])/3 
     metrics_SD.loc['Pertinence'] = metrics_SD.loc['Pertinence'] / 2
     metrics_SD.loc['P75'] = df_inf_time['75%'].to_numpy()
     metrics_SD.loc['Latence'] = np.clip(target_latency / metrics_SD.loc['P75'],0,  1)
