@@ -135,6 +135,28 @@ def _(np, plt):
     return (radar_plot,)
 
 
+@app.cell
+def _(np, pd):
+    def global_score(df):
+        df_weight = {
+            'Exactitude' : 0.3,
+            'Pertinence' : 0.2,
+            'No Hallucination' : 0.2, 
+            'Complexité' : 0.15,
+            'Latence' : 0.15,
+        }
+        df_gs = pd.DataFrame({
+            strategy : [] for strategy in df.columns
+        })
+
+        for s in df.columns:
+            df_gs.loc[0, s] = np.sum([ df_weight[k] * df.loc[k, s]for k in df_weight.keys()])
+
+        return df_gs
+        
+    return (global_score,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -158,11 +180,21 @@ def _(df_a_jc):
 
 
 @app.cell
-def _(df_a_jc, df_b_jc, df_c_jc, df_inf_time, keys, pd):
+def _():
+    target_latency  = 2.0
+    return (target_latency,)
+
+
+@app.cell
+def _(df_a_jc, df_b_jc, df_c_jc, df_inf_time, keys, np, pd, target_latency):
     metrics_JC = pd.concat([df_a_jc['mean'], df_b_jc['mean'], df_c_jc['mean']], axis=1, keys=keys)
-    metrics_JC.loc['Complexité'] = [1, 3, 2]
-    metrics_JC.loc['Latence'] = df_inf_time['mean'].to_list()
+    metrics_JC.loc['No Hallucination'] = 1 - metrics_JC.loc['Hallucination']
+    metrics_JC.loc['Complexité'] = 1- np.array([1, 3, 2])/3 
     metrics_JC.loc['Pertinence'] = metrics_JC.loc['Pertinence'] / 2
+    metrics_JC.loc['P75'] = df_inf_time['75%'].to_numpy()
+    metrics_JC.loc['Latence'] = np.clip(target_latency / metrics_JC.loc['P75'],0,  1)
+    metrics_JC.drop('P75', inplace=True)
+    metrics_JC.drop('Hallucination', inplace=True)
     return (metrics_JC,)
 
 
@@ -174,10 +206,26 @@ def _(metrics_JC):
 
 @app.cell
 def _(metrics_JC, plt, radar_plot):
-    df_norm_JC = (metrics_JC - metrics_JC.min()) / (metrics_JC.max() - metrics_JC.min())
+    df_norm_JC =  metrics_JC#(metrics_JC - metrics_JC.min()) / (metrics_JC.max() - metrics_JC.min())
     fig, ax = radar_plot(df_norm_JC)
     plt.title('Compaison JC')
     plt.show()
+    return
+
+
+@app.cell
+def _(global_score, metrics_JC):
+    gs_JC = global_score(metrics_JC).transpose()
+    gs_JC.columns = ['score']
+    return (gs_JC,)
+
+
+@app.cell
+def _(gs_JC, plt, sns):
+    sns.barplot(x=gs_JC['score'], y=gs_JC.index, hue=gs_JC.index)
+    plt.title('Comparaison des scores globaux (JC)')
+    plt.ylabel('Stratégies')
+    plt.xlabel('Score Global')
     return
 
 
@@ -204,11 +252,15 @@ def _(df_a_sd):
 
 
 @app.cell
-def _(df_a_sd, df_b_sd, df_c_sd, df_inf_time, keys, pd):
+def _(df_a_sd, df_b_sd, df_c_sd, df_inf_time, keys, np, pd, target_latency):
     metrics_SD = pd.concat([df_a_sd['mean'], df_b_sd['mean'], df_c_sd['mean']], axis=1, keys=keys)
-    metrics_SD.loc['Complexité'] = [1, 3, 2]
-    metrics_SD.loc['Latence'] = df_inf_time['mean'].to_list()
+    metrics_SD.loc['No Hallucination'] = 1 - metrics_SD.loc['Hallucination']
+    metrics_SD.loc['Complexité'] = 1- np.array([1, 3, 2])/3 
     metrics_SD.loc['Pertinence'] = metrics_SD.loc['Pertinence'] / 2
+    metrics_SD.loc['P75'] = df_inf_time['75%'].to_numpy()
+    metrics_SD.loc['Latence'] = np.clip(target_latency / metrics_SD.loc['P75'],0,  1)
+    metrics_SD.drop('P75', inplace=True)
+    metrics_SD.drop('Hallucination', inplace=True)
     return (metrics_SD,)
 
 
@@ -220,10 +272,25 @@ def _(metrics_SD):
 
 @app.cell
 def _(metrics_SD, plt, radar_plot):
-    df_norm_SD = (metrics_SD - metrics_SD.min()) / (metrics_SD.max() - metrics_SD.min())
-    fig2, ax2 = radar_plot(df_norm_SD)
+    fig2, ax2 = radar_plot(metrics_SD)
     plt.title('Comparaison SDS')
     plt.show()
+    return
+
+
+@app.cell
+def _(global_score, metrics_SD):
+    gs_SD = global_score(metrics_SD).transpose()
+    gs_SD.columns = ['score']
+    return (gs_SD,)
+
+
+@app.cell
+def _(gs_SD, plt, sns):
+    sns.barplot(x=gs_SD['score'], y=gs_SD.index, hue=gs_SD.index)
+    plt.title('Comparaison des scores globaux (SD)')
+    plt.ylabel('Stratégies')
+    plt.xlabel('Score Global')
     return
 
 
