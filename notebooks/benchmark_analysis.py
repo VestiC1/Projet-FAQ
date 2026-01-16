@@ -103,33 +103,33 @@ def _(np, plt):
     def radar_plot(df):
         metrics = df.index.tolist()
         strategies = df.columns.tolist()
-    
+
         angles = np.linspace(0, 2 * np.pi, len(metrics), endpoint=False).tolist()
         angles += angles[:1]
-    
+
         fig, ax = plt.subplots(subplot_kw=dict(polar=True))
-    
+
         for strategy in strategies:
             values = df[strategy].tolist()
             values += values[:1]
             ax.plot(angles, values, label=strategy)
             ax.fill(angles, values, alpha=0.1)
-    
+
         ax.set_xticks(angles[:-1])
         ax.set_xticklabels(metrics)
-    
+
         # Move radial labels (0.2, 0.4, etc.) to avoid overlap
         ax.set_rlabel_position(30)
-    
+
         # Add padding to metric labels
         ax.tick_params(axis='x', pad=15)
-    
+
         # Start from top instead of right
         ax.set_theta_offset(np.pi / 2)
         ax.set_theta_direction(-1)
-    
+
         ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1))
-    
+
         plt.tight_layout()
         return fig, ax
     return (radar_plot,)
@@ -162,6 +162,7 @@ def _(df_a_jc, df_b_jc, df_c_jc, df_inf_time, keys, pd):
     metrics_JC = pd.concat([df_a_jc['mean'], df_b_jc['mean'], df_c_jc['mean']], axis=1, keys=keys)
     metrics_JC.loc['Complexité'] = [1, 3, 2]
     metrics_JC.loc['Latence'] = df_inf_time['mean'].to_list()
+    metrics_JC.loc['Pertinence'] = metrics_JC.loc['Pertinence'] / 2
     return (metrics_JC,)
 
 
@@ -207,6 +208,7 @@ def _(df_a_sd, df_b_sd, df_c_sd, df_inf_time, keys, pd):
     metrics_SD = pd.concat([df_a_sd['mean'], df_b_sd['mean'], df_c_sd['mean']], axis=1, keys=keys)
     metrics_SD.loc['Complexité'] = [1, 3, 2]
     metrics_SD.loc['Latence'] = df_inf_time['mean'].to_list()
+    metrics_SD.loc['Pertinence'] = metrics_SD.loc['Pertinence'] / 2
     return (metrics_SD,)
 
 
