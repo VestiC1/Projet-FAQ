@@ -21,7 +21,7 @@ def _():
     import pandas as pd
     import seaborn as sns
     import matplotlib.pyplot as plt
-    return BENCHMARK_RESULTS, DATA_DIR, pd
+    return BENCHMARK_RESULTS, pd
 
 
 @app.cell
@@ -93,12 +93,12 @@ def _(df, make_table):
 def _(get_data_a):
     df_a = get_data_a()
     df_a
-    return (df_a,)
+    return
 
 
 @app.cell
-def _(DATA_DIR, df_a):
-    df_a.to_csv(DATA_DIR / "annotation_a_JC.csv")
+def _():
+    #df_a.to_csv(DATA_DIR / "annotation_a.csv")
     return
 
 
@@ -121,12 +121,12 @@ def _(df, make_table):
 def _(get_data_b):
     df_b = get_data_b()
     df_b
-    return (df_b,)
+    return
 
 
 @app.cell
-def _(DATA_DIR, df_b):
-    df_b.to_csv(DATA_DIR / "annotation_b_JC.csv")
+def _():
+    #df_b.to_csv(DATA_DIR / "annotation_b.csv")
     return
 
 
@@ -149,12 +149,12 @@ def _(df, make_table):
 def _(get_data_c):
     df_c = get_data_c()
     df_c
-    return (df_c,)
+    return
 
 
 @app.cell
-def _(DATA_DIR, df_c):
-    df_c.to_csv(DATA_DIR / "annotation_c_JC.csv")
+def _():
+    #df_c.to_csv(DATA_DIR / "annotation_c.csv")
     return
 
 
