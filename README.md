@@ -192,8 +192,3 @@ Le système répond aux questions sur :
 - **Rate Limits** : L'API HuggingFace gratuite impose des limites (pauses nécessaires)
 - **Périmètre** : Le système refuse les questions hors périmètre
 - **Langue** : Optimisé pour le français uniquement
-
-## Auteurs
-
-- **Jonathan Caillaux**
-- **Steve Dos Santos**
