@@ -18,3 +18,6 @@ benchmmark_strats:
 
 token:
 	python -m scripts.test_system_prompt
+
+evaluate:
+	python -m scripts.evaluate
