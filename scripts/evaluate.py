@@ -67,7 +67,7 @@ def build_ragas_datasets(df, strategies):
         } for strategy in strategies
     }
 
-    for i, row in df.loc[:0].iterrows():
+    for i, row in df.loc.iterrows():
         for strategy in strategies:
             datasets[strategy]["user_input"].append(row['question'])
             datasets[strategy]["response"].append(row[strategy])
