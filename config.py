@@ -58,13 +58,16 @@ system_prompt_template = {
         Contexte :
         {context}
 
+        Règles :
+        - Réponds uniquement en français avec vouvoiement
+        - Utilise uniquement les informations du contexte ci-dessus
+        - Sois concis (2-4 phrases)
+        - Si le contexte ne contient pas la réponse, répond simplement : « Je n'ai pas trouvé d'information sur ce sujet. » et rien d'autres
+        - N'invente rien
+
         Question : {query}
 
-        Si le contexte contient la réponse :
-        - Réponds en français (vouvoiement), 2-4 phrases, puis "Sources : [doc_ids]"
-
-        Si le contexte ne contient PAS la réponse :
-        - Réponds uniquement : "Je n'ai pas trouvé d'information sur ce sujet."
+        Réponds puis indique les sources utilisées (ex: Sources : [doc_id1, doc_id2])
         """,
 
     'C' : "{context}"
