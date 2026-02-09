@@ -21,6 +21,7 @@ FAQ_VEC = DATA_DIR / "faq_embeddings.parquet"
 
 # Expose les variables nécessaires
 HF_TOKEN = os.getenv("HF_TOKEN")
+CHAT_TOKEN = os.getenv('MISTRAL_TOKEN')
 
 if not HF_TOKEN:
     raise ValueError("Le token Hugging Face (HF_TOKEN) n'est pas défini dans le fichier .env.")
@@ -62,12 +63,12 @@ system_prompt_template = {
         - Réponds uniquement en français avec vouvoiement
         - Utilise uniquement les informations du contexte ci-dessus
         - Sois concis (2-4 phrases)
-        - Si le contexte ne contient pas la réponse, répond simplement : « Je n'ai pas trouvé d'information sur ce sujet. » et rien d'autres
+        - Si le contexte ne contient pas la réponse uniquement: "Je n'ai pas trouvé d'information sur ce sujet."
         - N'invente rien
 
         Question : {query}
 
-        Réponds puis indique les sources utilisées (ex: Sources : [doc_id1, doc_id2])
+        Si la réponse est dans le contexte, répond puis indique les sources utilisées en suivant le format "Sources : [doc_id1, doc_id2, ...]"
         """,
 
     'C' : "{context}"
@@ -75,3 +76,4 @@ system_prompt_template = {
 
 # Benchmark results path
 BENCHMARK_RESULTS = DATA_DIR / "benchmark_results.parquet"
+RAGAS_METRICS = DATA_DIR / "ragas_metrics.parquet"

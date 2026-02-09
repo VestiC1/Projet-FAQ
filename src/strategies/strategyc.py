@@ -16,9 +16,9 @@ class StrategyC(Strategy):
         documents = self.rag.search(text=question)
         context_text = self._build_context(documents=documents)
 
-        answer = self.qna.predict(question=question, context=context_text)
+        answer, _ = self.qna.predict(question=question, context=context_text)
 
-        return answer['answer'].strip()
+        return answer['answer'].strip(), context_text
     
     def _build_context(self, documents) -> str:
         context_text = "\n----------".join([f"""

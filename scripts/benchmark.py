@@ -16,7 +16,7 @@ def initialize_dataframe(strategies):
         **{
             key: []
             for s in strategies
-            for key in (s.strategy_name, f"{s.strategy_name}_time")
+            for key in (s.strategy_name, f"{s.strategy_name}_time", f"{s.strategy_name}_context")
         }
     }
 
@@ -28,7 +28,7 @@ def initialize_dataframe(strategies):
         **{
             key: pa.float64() if 'time' in key else pa.string()
             for s in strategies
-            for key in (s.strategy_name, f"{s.strategy_name}_time")
+            for key in (s.strategy_name, f"{s.strategy_name}_time", f"{s.strategy_name}_context")
         }
     })
     return df, schema
@@ -64,10 +64,11 @@ def main():
 
         for strategy in strategies:
 
-            answers[strategy.strategy_name] = strategy.answer(question=question)
+            answers[strategy.strategy_name], context = strategy.answer(question=question)
 
             df[strategy.strategy_name].append(answers[strategy.strategy_name])
             df[f"{strategy.strategy_name}_time"].append(strategy.last_ellapsed_time)
+            df[f"{strategy.strategy_name}_context"].append(context)
 
         print("A:", end="")
         pprint(answers)
