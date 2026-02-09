@@ -1,5 +1,6 @@
 from huggingface_hub import InferenceClient
 from .abstract import Model
+
 class LLMChatCompletion(Model):
     def __init__(self, hf_token: str, model_name: str, prompt_template: str, max_tokens: int):
         super().__init__(model_name=model_name)
@@ -19,4 +20,4 @@ class LLMChatCompletion(Model):
             messages=messages, 
             max_tokens=self.max_tokens,
             temperature=0.05
-        ).choices[0].message['content'].strip()
+        ).choices[0].message['content'].strip(), prompt
