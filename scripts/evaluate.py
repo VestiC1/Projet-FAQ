@@ -1,4 +1,4 @@
-from config import CHAT_TOKEN, BENCHMARK_RESULTS, RAGAS_METRICS
+from config import CHAT_TOKEN, BENCHMARK_RESULTS, RAGAS_METRICS, GEMINI_TOKEN, embd_model_name
 import pandas as pd
 from ragas.metrics import Faithfulness, AnswerRelevancy, AnswerCorrectness
 from ragas import evaluate
@@ -11,7 +11,8 @@ from langchain_openai import OpenAIEmbeddings as LangchainOpenAIEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 from pprint import pprint
 import re
-
+from google import genai
+import time
 
 strategy_name = re.compile(r'^Strategy_(\w)$')
 
@@ -21,12 +22,20 @@ client = AsyncOpenAI(
     base_url="https://api.mistral.ai/v1"
 )
 
+#client = genai.Client(api_key=GEMINI_TOKEN)
+
 llm = llm_factory(
     "mistral-small-latest",
     provider="openai",
     client=client,
 )
 
+
+#llm = llm_factory(
+#    "gemini-2.5-flash-lite",
+#    provider="google",
+#    client=client,
+#)
 # Embeddings
 #embeddings = LangchainEmbeddingsWrapper(
 #    LangchainOpenAIEmbeddings(
@@ -37,14 +46,14 @@ llm = llm_factory(
 #)
 embeddings = LangchainEmbeddingsWrapper(
     HuggingFaceEmbeddings(
-        model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+        model_name=embd_model_name#"sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     )
 )
 # Run config pour limiter le rate
 run_config = RunConfig(
     max_workers=1,
     max_wait=120,
-    max_retries=5,
+    max_retries=3,
 )
 
 
@@ -69,9 +78,9 @@ def build_ragas_datasets(df, strategies):
 
     for i, row in df.iterrows():
         for strategy in strategies:
-            datasets[strategy]["user_input"].append(row['question'])
+            datasets[strategy]["user_input"].append(f"query: {row['question']}")
             datasets[strategy]["response"].append(row[strategy])
-            datasets[strategy]["retrieved_contexts"].append([row[f"{strategy}_context"]])
+            datasets[strategy]["retrieved_contexts"].append(row[f"{strategy}_context"].split("\n----------"))
             datasets[strategy]["reference"].append(build_ground_truth(row))
 
     return datasets
@@ -90,7 +99,7 @@ def run_evaluation(datasets):
         
         metrics = [
             Faithfulness(llm=llm),
-            AnswerRelevancy(llm=llm, embeddings=embeddings, strictness=1),
+            AnswerRelevancy(llm=llm, embeddings=embeddings, strictness=50),
             AnswerCorrectness(llm=llm, embeddings=embeddings)
         ]
 
@@ -103,6 +112,8 @@ def run_evaluation(datasets):
         results['faithfulness'].append(result['faithfulness'][0])
         results['answer_relevancy'].append(result['answer_relevancy'][0])
         results['answer_correctness'].append(result['answer_correctness'][0])
+        
+        #time.sleep(50)
 
 
     df = pd.DataFrame.from_dict(results)
@@ -114,6 +125,9 @@ def run_evaluation(datasets):
 
 
 def main():
+    #for model in client.models.list():
+    #    print(model.name)
+    #return
     df = pd.read_parquet(BENCHMARK_RESULTS)
     strategy_names = count_strategies(df)
 

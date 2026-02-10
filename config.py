@@ -22,7 +22,7 @@ FAQ_VEC = DATA_DIR / "faq_embeddings.parquet"
 # Expose les variables nécessaires
 HF_TOKEN = os.getenv("HF_TOKEN")
 CHAT_TOKEN = os.getenv('MISTRAL_TOKEN')
-
+GEMINI_TOKEN = os.getenv('GEMINI_TOKEN')
 if not HF_TOKEN:
     raise ValueError("Le token Hugging Face (HF_TOKEN) n'est pas défini dans le fichier .env.")
 

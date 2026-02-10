@@ -113,7 +113,7 @@ def _(df_f):
 
 @app.cell
 def _(df_f):
-    df_f.columns = ['No Hallucination', 'Pertinence', 'Exactitude', 'Latence', 'Simplicité']
+    df_f.columns = ['No Hallucination', 'Pertinence', 'Exactitude', 'Simplicité', 'Latence']
     return
 
 

@@ -20,4 +20,4 @@ class LLMChatCompletion(Model):
             messages=messages, 
             max_tokens=self.max_tokens,
             temperature=0.05
-        ).choices[0].message['content'].strip(), prompt
+        ).choices[0].message['content'].strip(), "Aucun contexte fourni." if context == "" else context
