@@ -7,11 +7,11 @@ class StrategyA(Strategy):
     def __init__(self, hf_token: str, model_name: str, system_prompt: str, max_tokens: int, *args, **kwargs):
         super().__init__(strategy_name='Strategy_A')
 
-        self.llm = LLMChatCompletion(hf_token=hf_token, model_name=model_name, system_prompt=system_prompt, max_tokens=max_tokens)
+        self.llm = LLMChatCompletion(hf_token=hf_token, model_name=model_name, prompt_template=system_prompt, max_tokens=max_tokens)
 
     def _answer(self, question: str) -> str:
         
-        return self.llm.predict(prompt=question)
+        return self.llm.predict(query=question)
     
 def main():
     system_prompt = system_prompt_template['A']

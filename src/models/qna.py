@@ -10,5 +10,5 @@ class QnAExtractor(Model):
 
     def predict(self, question, context):
 
-        return self.model(question=question, context=context)
+        return self.model(question=question, context=context), context
 

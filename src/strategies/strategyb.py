@@ -8,7 +8,7 @@ class StrategyB(Strategy):
     def __init__(self, hf_token: str, model_name: str, system_prompt: str, max_tokens: int, corpus:Path, vec_name: str, top_k: int, *args, **kwargs):
         super().__init__(strategy_name='Strategy_B')
 
-        self.llm = LLMChatCompletion(hf_token=hf_token, model_name=model_name, system_prompt=system_prompt, max_tokens=max_tokens)
+        self.llm = LLMChatCompletion(hf_token=hf_token, model_name=model_name, prompt_template=system_prompt, max_tokens=max_tokens)
         self.rag = TinyRag(model_name=vec_name, corpus=corpus, k=top_k)
 
     def _answer(self, question: str) -> str:
@@ -16,7 +16,7 @@ class StrategyB(Strategy):
         documents = self.rag.search(text=question)
         context_text = self._build_context(documents=documents)
 
-        return self.llm.predict(prompt=question, context=context_text)
+        return self.llm.predict(query=question, context=context_text)
     
     def _build_context(self, documents) -> str:
         context_text = "\n----------".join([f"""

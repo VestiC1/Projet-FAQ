@@ -21,7 +21,8 @@ FAQ_VEC = DATA_DIR / "faq_embeddings.parquet"
 
 # Expose les variables nécessaires
 HF_TOKEN = os.getenv("HF_TOKEN")
-
+CHAT_TOKEN = os.getenv('MISTRAL_TOKEN')
+GEMINI_TOKEN = os.getenv('GEMINI_TOKEN')
 if not HF_TOKEN:
     raise ValueError("Le token Hugging Face (HF_TOKEN) n'est pas défini dans le fichier .env.")
 
@@ -44,35 +45,35 @@ system_prompt_template = {
         Assistant IA de la Communauté de Communes Val de Loire Numérique. 
         Réponds **uniquement** aux questions sur : état civil, urbanisme, déchets, transports, petite-enfance, social, vie associative, élections, logement, culture/sport, fiscalité, eau/assainissement.
         
+        Question : {query}
+
         **Règles :**
         - Langue : français uniquement.
         - Si la question est dans ce périmètre, répond en 1-2 phrases maximum. 
         - Si hors-périmètre, réponds **uniquement** : "Ce sujet ne fait pas partie de mon périmètre."
+
     """,
     'B' : """
-        Tu es l'assistant officiel de la Communauté de Communes Val de Loire Numérique.
+        Tu es l'assistant de la Communauté de Communes Val de Loire Numérique.
 
-        DOMAINES DE COMPÉTENCE :
-        État civil, urbanisme, déchets, transports, petite-enfance, social, vie associative, élections, logement, culture, sport, fiscalité locale, eau, assainissement.
-
-        DOCUMENTS DISPONIBLES :
+        Contexte :
         {context}
 
-        INSTRUCTIONS STRICTES :
-        1. Réponds UNIQUEMENT en français correct et vouvoiement.
-        2. Base ta réponse EXCLUSIVEMENT sur les documents ci-dessus.
-        3. Sois concis : 2-4 phrases maximum.
-        4. Si aucun document ne permet de répondre : écris uniquement « Je n'ai pas trouvé d'information sur ce sujet dans les documents disponibles. »
-        5. Ne liste JAMAIS tes domaines de compétence dans ta réponse.
-        6. N'invente rien. Ne suppose rien.
+        Règles :
+        - Réponds uniquement en français avec vouvoiement
+        - Utilise uniquement les informations du contexte ci-dessus
+        - Sois concis (2-4 phrases)
+        - Si le contexte ne contient pas la réponse uniquement: "Je n'ai pas trouvé d'information sur ce sujet."
+        - N'invente rien
 
-        FORMAT DE RÉPONSE :
-        [Ta réponse]
+        Question : {query}
 
-        Sources : [doc_id1, doc_id2] ← uniquement si des documents ont été utilisés, sinon n'écris pas cette ligne.""",
+        Si la réponse est dans le contexte, répond puis indique les sources utilisées en suivant le format "Sources : [doc_id1, doc_id2, ...]"
+        """,
 
     'C' : "{context}"
 }
 
 # Benchmark results path
 BENCHMARK_RESULTS = DATA_DIR / "benchmark_results.parquet"
+RAGAS_METRICS = DATA_DIR / "ragas_metrics.parquet"

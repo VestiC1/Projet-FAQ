@@ -10,8 +10,14 @@ mistral:
 providers:
 	python -m scripts.hf_utils.providers_mistral
 
-strats :
+strats:
 	python -m scripts.test_strategies
 
 benchmmark_strats:
 	python -m scripts.benchmark
+
+token:
+	python -m scripts.test_system_prompt
+
+evaluate:
+	python -m scripts.evaluate
