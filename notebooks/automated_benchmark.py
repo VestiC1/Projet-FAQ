@@ -62,7 +62,7 @@ def _(mo):
 
 @app.cell
 def _(df_f, np):
-    df_f['complexité'] = np.array([3, 2, 1]) / 3.0
+    df_f['Simplicité'] = np.array([3, 2, 1]) / 3.0
     return
 
 
@@ -96,6 +96,12 @@ def _():
 @app.cell
 def _(df_f, df_inf_time, np, target_latency):
     df_f['Latence'] = np.clip(target_latency / df_inf_time['75%'].to_numpy(),0,  1)
+    return
+
+
+@app.cell
+def _(df_f):
+    df_f.columns
     return
 
 
