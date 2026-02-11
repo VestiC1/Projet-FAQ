@@ -1,19 +1,20 @@
 from config import FAQ_VEC, embd_model_name, RAG_K
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
+from fastembed.common.model_description import PoolingType, ModelSource
 import pandas as pd
 import numpy as np
 from pathlib import Path
 from .abstract import Model
 
 def compute_embeddings(model, texts: list[str]) -> list[list[float]]:
-    return model.encode(texts)
+    return model.embed(texts)
 
 class TinyRag(Model):
 
     def __init__(self, model_name: str, corpus: Path, k=5):
         super().__init__(model_name=model_name)
 
-        self.model = SentenceTransformer(model_name)
+        self.model = self.load_model(model_name)
 
         self.corpus_df = self.load_embeddings(corpus)
         self.corpus_vec = np.array(self.corpus_df['embedding'].to_list())
@@ -21,9 +22,22 @@ class TinyRag(Model):
         self.corpus_df.drop(columns=['embedding'], inplace=True)
         self.k = k
     
+    def load_model(self,model_name):
+        TextEmbedding.add_custom_model(
+            model=model_name,
+            pooling=PoolingType.MEAN,
+            normalization=True,
+            sources=ModelSource(hf=model_name),
+            dim=384,
+            model_file="onnx/model.onnx",
+        )
+
+        return TextEmbedding(model_name=model_name)
+    
     def search(self, text):
-        vector = compute_embeddings(model=self.model, texts=[f"query: {text}"])
-        projected = self.corpus_vec @ vector[0].T
+        vector = next(compute_embeddings(model=self.model, texts=[f"query: {text}"]))
+        
+        projected = self.corpus_vec @ vector.T
 
         idx = np.argsort(-projected)[:self.k]
         #print(self.corpus_df.iloc[idx][['id']])
