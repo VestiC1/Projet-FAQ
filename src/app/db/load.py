@@ -11,9 +11,10 @@ def load_faq(faq_path:Path):
 def get_document(faq_json, id):
 
     results = []
-
+  
     for doc in faq_json["faq"] :
-        if doc["id"]==id :
+
+        if doc["id"]==str(id):
             results.append(doc)
             break
 
