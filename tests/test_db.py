@@ -8,7 +8,10 @@ import json
 def test_load_faq_success():
     """Teste le chargement réussi d'un fichier FAQ."""
     mock_json = {"faq": [{"id": 1, "question": "Test?"}]}
-    with patch("builtins.open", mock_open(read_data=json.dumps(mock_json))):
+
+    # Mock de Path.exists() pour retourner True
+    with patch.object(Path, 'exists', return_value=True), \
+         patch("builtins.open", mock_open(read_data=json.dumps(mock_json))):
         result = load_faq(Path("dummy_path"))
         assert result == mock_json
 
@@ -20,12 +23,12 @@ def test_load_faq_file_not_found():
 
 def test_get_document_found():
     """Teste la récupération d'un document existant."""
-    mock_faq = {"faq": [{"id": 1, "question": "Test?"}]}
-    result = get_document(mock_faq, 1)
-    assert result == [{"id": 1, "question": "Test?"}]
+    mock_faq = {"faq": [{"id": "1", "question": "Test?"}]}
+    result = get_document(mock_faq, "1")
+    assert result == [{"id": "1", "question": "Test?"}]
 
 def test_get_document_not_found():
     """Teste la récupération d'un document inexistant."""
-    mock_faq = {"faq": [{"id": 1, "question": "Test?"}]}
+    mock_faq = {"faq": [{"id": "1", "question": "Test?"}]}
     result = get_document(mock_faq, 99)
     assert result == []
