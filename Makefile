@@ -21,3 +21,6 @@ token:
 
 evaluate:
 	python -m scripts.evaluate
+
+app:
+	python -m scripts.run_api

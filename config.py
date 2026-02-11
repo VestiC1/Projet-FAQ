@@ -77,3 +77,8 @@ system_prompt_template = {
 # Benchmark results path
 BENCHMARK_RESULTS = DATA_DIR / "benchmark_results.parquet"
 RAGAS_METRICS = DATA_DIR / "ragas_metrics.parquet"
+
+API_CONFIG = {
+    "host": "localhost",
+    "port": 8222
+}
