@@ -1,24 +1,8 @@
 import asyncio
-import json
-import os
-from pathlib import Path
 from config import postgres, SCHEMA_FILE, FAQ_PATH
 import asyncpg
 from src.api.db.load import load_faq
-
-async def create_schema(conn, schema):
-    schema = SCHEMA_FILE.read_text(encoding="utf-8")
-    await conn.execute(schema)
-
-async def insert_document(conn, document):
-    await conn.execute(
-        """
-            INSERT INTO documents (content)
-            VALUES ($1::jsonb);
-        """,
-        json.dumps(document),
-    )
-
+from src.database.crud import create_schema, insert_document
 
 async def main():
     conn = await asyncpg.connect(**postgres, statement_cache_size=0)
@@ -37,7 +21,7 @@ async def main():
             
             inserted += 1
 
-        print(f"✓ {inserted} documents upserted")
+        print(f"{inserted} documents upserted")
         
     finally:
         await conn.close()
