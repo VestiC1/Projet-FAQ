@@ -19,7 +19,7 @@ async def home(request: Request):
 async def health(request: Request):
     return JSONResponse(content={"status":"OK"})
 
-@router.post("/answer", tags=[""], response_class=JSONResponse)
+@router.post("/answer", tags=["RAG"], response_class=JSONResponse)
 async def answer(request: Request, query:Query, rag=Depends(get_rag)):
     answer = rag.answer(question=query.question, stream=False)
     return JSONResponse(content={"answer":answer})
