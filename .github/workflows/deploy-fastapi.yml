@@ -9,6 +9,7 @@ on:
       - "api/**"
       - "vercel.json"
       - "pyproject.toml"
+      - ".github/workflows/**"
 
 jobs:
   deploy:
