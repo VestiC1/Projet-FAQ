@@ -37,16 +37,6 @@ export default function FAQList() {
     return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b, 'fr'));
   }, [faqData]);
 
-  const Keywords = ({ keywords }) => (
-    <div className="flex flex-wrap gap-1.5 mt-2">
-      {keywords.map((kw) => (
-        <Chip key={kw} size="sm" variant="dot" color="secondary">
-          {kw}
-        </Chip>
-      ))}
-    </div>
-  );
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -86,7 +76,7 @@ export default function FAQList() {
             <Divider className="flex-1" />
           </div>
 
-          {/* Cartes en row */}
+          {/* Cartes */}
           <div className="space-y-3">
             {items.map((item) => (
               <Card
@@ -95,27 +85,32 @@ export default function FAQList() {
               >
                 <CardBody className="p-0">
                   <div className="flex flex-row items-stretch">
-                    {/* ID */}
+                    {/* ID à gauche, centré verticalement */}
                     <div className="flex items-center justify-center px-5 py-4 bg-gray-50 border-r border-gray-200 min-w-[80px]">
                       <Chip size="sm" variant="flat" color="default">
                         {item.id}
                       </Chip>
                     </div>
 
-                    {/* Question + mots-clés */}
-                    <div className="flex flex-col justify-center px-5 py-4 border-r border-gray-200 w-1/3 min-w-[200px]">
+                    {/* Colonne droite : question → réponse → mots-clés */}
+                    <div className="flex-1 flex flex-col gap-3 px-5 py-4">
                       <h3 className="text-base font-semibold text-gray-800">
                         {item.question}
                       </h3>
-                      <Keywords keywords={item.keywords} />
-                    </div>
 
-                    {/* Réponse + mots-clés */}
-                    <div className="flex-1 flex flex-col justify-center px-5 py-4">
+                      <Divider />
+
                       <p className="text-gray-700 leading-relaxed">
                         {item.answer}
                       </p>
-                      <Keywords keywords={item.keywords} />
+
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {item.keywords.map((kw) => (
+                          <Chip key={kw} size="sm" variant="dot" color="secondary">
+                            {kw}
+                          </Chip>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </CardBody>
