@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from src.api.services import get_faq, get_document
 from .dependencies import get_supabase, get_rag
 from supabase import Client
@@ -23,6 +23,13 @@ async def health(request: Request):
 async def answer(request: Request, query:Query, rag=Depends(get_rag)):
     answer = rag.answer(question=query.question, stream=False)
     return JSONResponse(content={"answer":answer})
+
+@router.post("/answer/stream", tags=["RAG"], response_class=StreamingResponse)
+async def answer_stream(request: Request, query: Query, rag=Depends(get_rag)):
+    return StreamingResponse(
+        rag.answer(question=query.question, stream=True),
+        media_type="text/plain; charset=utf-8",
+    )
 
 @router.get("/FAQ", tags=[""], response_class=JSONResponse)
 async def faq(request: Request, sb: Client= Depends(get_supabase)):
