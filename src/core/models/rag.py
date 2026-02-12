@@ -1,11 +1,12 @@
 from config import FAQ_VEC, embd_model_name, RAG_K
-from scripts.compute_embeding import compute_embeddings
 from sentence_transformers import SentenceTransformer
 import pandas as pd
 import numpy as np
 from pathlib import Path
 from .abstract import Model
 
+def compute_embeddings(model, texts: list[str]) -> list[list[float]]:
+    return model.encode(texts)
 
 class TinyRag(Model):
 

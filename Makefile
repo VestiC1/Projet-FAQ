@@ -21,3 +21,12 @@ token:
 
 evaluate:
 	python -m scripts.evaluate
+
+app:
+	python -m scripts.run_api
+
+deploy:
+	modal deploy -m src.infra.app
+
+requirements.txt:
+	uv pip compile pyproject.toml -o requirements.txt

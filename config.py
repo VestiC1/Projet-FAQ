@@ -38,7 +38,7 @@ RAG_K = 10
 # Model
 LLMNAME="mistralai/Mistral-7B-Instruct-v0.2"
 
-qna_model_name = "timpal0l/mdeberta-v3-base-squad2"
+qna_model_name = "etalab-ia/camembert-base-squadFR-fquad-piaf"#"timpal0l/mdeberta-v3-base-squad2"
 
 system_prompt_template = {
     'A' : """
@@ -77,3 +77,23 @@ system_prompt_template = {
 # Benchmark results path
 BENCHMARK_RESULTS = DATA_DIR / "benchmark_results.parquet"
 RAGAS_METRICS = DATA_DIR / "ragas_metrics.parquet"
+
+API_CONFIG = {
+    "host": "localhost",
+    "port": 8222
+}
+
+postgres = {
+    'user' : os.getenv('PG_USER'),
+    'password' : os.getenv('PG_PSWD'),
+    'host' : os.getenv('PG_HOST'),
+    'port' : int(os.getenv('PG_PORT')),
+    'database' : os.getenv('PG_DBNM')
+}
+
+supabase_rest = f"https://{os.getenv('SUPABASE_REST')}"
+SUPABASE_TOKEN = os.getenv('SUPABASE_TOKEN')
+
+SCHEMA_FILE = ROOT / 'src' / 'database' / 'sql' / 'structure.sql'
+
+MODAL_ENDPOINT= f"https://{os.getenv('MODAL_ENDPOINT')}"

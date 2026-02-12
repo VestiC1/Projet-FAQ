@@ -75,7 +75,7 @@ def main():
         print("\n" + "-"*50 + "\n")
 
         # Slow pace to avoid rate limits
-        time.sleep(3)
+        time.sleep(5)
 
         
 

@@ -51,7 +51,7 @@ embeddings = LangchainEmbeddingsWrapper(
 )
 # Run config pour limiter le rate
 run_config = RunConfig(
-    max_workers=1,
+    max_workers=5,
     max_wait=120,
     max_retries=3,
 )
