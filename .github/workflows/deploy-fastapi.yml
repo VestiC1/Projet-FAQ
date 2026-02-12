@@ -24,6 +24,11 @@ jobs:
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh && echo "$HOME/.local/bin" >> $GITHUB_PATH
 
+      - name: Force requirements.txt usage
+        run: |
+          rm -f uv.lock
+          rm -f pyproject.toml
+
       - name: Install Vercel CLI
         run: npm install -g vercel
 
