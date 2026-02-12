@@ -70,7 +70,7 @@ export default function FAQList() {
         <section key={category}>
           {/* Séparateur de catégorie */}
           <div className="flex items-center gap-4 mb-4">
-            <h2 className="text-xl font-bold text-gray-800 whitespace-nowrap">
+            <h2 className="text-xl font-bold text-indigo-600 whitespace-nowrap">
               {formatCategory(category)}
             </h2>
             <Divider className="flex-1" />
@@ -85,7 +85,7 @@ export default function FAQList() {
               >
                 <CardBody className="p-0">
                   <div className="flex flex-row items-stretch">
-                    {/* ID à gauche, centré verticalement */}
+                    {/* ID à gauche */}
                     <div className="flex items-center justify-center px-5 py-4 bg-gray-50 border-r border-gray-200 min-w-[80px]">
                       <Chip size="sm" variant="flat" color="default">
                         {item.id}
@@ -100,7 +100,7 @@ export default function FAQList() {
 
                       <Divider />
 
-                      <p className="text-gray-700 leading-relaxed">
+                      <p className="text-gray-700 leading-relaxed text-justify">
                         {item.answer}
                       </p>
 
