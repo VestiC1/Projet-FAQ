@@ -1,62 +1,34 @@
-from config import FAQ_VEC, embd_model_name, RAG_K
-from fastembed import TextEmbedding
-from fastembed.common.model_description import PoolingType, ModelSource
-import pandas as pd
-import numpy as np
-from pathlib import Path
 from .abstract import Model
+import requests
+from config import MODAL_ENDPOINT, RAG_K
+import requests
+import json 
 
-def compute_embeddings(model, texts: list[str]) -> list[list[float]]:
-    return model.embed(texts)
+class RetreivalService(Model):
 
-class TinyRag(Model):
-
-    def __init__(self, model_name: str, corpus: Path, k=5):
-        super().__init__(model_name=model_name)
-
-        self.model = self.load_model(model_name)
-
-        self.corpus_df = self.load_embeddings(corpus)
-        self.corpus_vec = np.array(self.corpus_df['embedding'].to_list())
-
-        self.corpus_df.drop(columns=['embedding'], inplace=True)
-        self.k = k
+    def __init__(self, endpoint:str, k:int=5, threshold:float=0.0):
+        super().__init__(model_name='modal')
+        self._endpoint = endpoint
+        self._k = k
+        self._threshold = threshold
     
-    def load_model(self,model_name):
-        TextEmbedding.add_custom_model(
-            model=model_name,
-            pooling=PoolingType.MEAN,
-            normalization=True,
-            sources=ModelSource(hf=model_name),
-            dim=384,
-            model_file="onnx/model.onnx",
-        )
-
-        return TextEmbedding(model_name=model_name)
     
     def search(self, text):
-        vector = next(compute_embeddings(model=self.model, texts=[f"query: {text}"]))
-        
-        projected = self.corpus_vec @ vector.T
-
-        idx = np.argsort(-projected)[:self.k]
-        #print(self.corpus_df.iloc[idx][['id']])
-        return self.corpus_df.iloc[idx][['id', 'question', 'answer', 'keywords']]
-    
-    def load_embeddings(self, path : Path) -> pd.DataFrame:
-        """Charge les embeddings FAQ depuis le fichier parquet."""
-
-        return pd.read_parquet(path)
+        query = f"query : {text}"
+        response = requests.post(
+            self._endpoint,
+            json={"query": query, "top_k": 10, "threshold": 0.0},
+        )
+        response.raise_for_status()
+        return [ json.loads(row['content']) for row in response.json()['results'] ]
     
     def predict(self, text):
         return self.search(text=text)
             
 
-
-
 def main():
-    
-    rag = TinyRag(model_name=embd_model_name, corpus=FAQ_VEC, k=RAG_K)
+    print('Here')
+    rag = RetreivalService(endpoint=MODAL_ENDPOINT, k=RAG_K)
     text = "Comment obtenir un acte de naissance ?"
     results = rag.search(text=text)
     print(results)

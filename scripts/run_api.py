@@ -15,7 +15,7 @@ if __name__ == "__main__":
     print(f"Docs: http://{API_CONFIG['host']}:{API_CONFIG['port']}/docs")
     
     uvicorn.run(
-        "src.app.main:app",
+        "src.api.main:app",
         host=API_CONFIG["host"],
         port=API_CONFIG["port"],
         reload=True # en dev

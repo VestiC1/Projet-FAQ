@@ -82,3 +82,18 @@ API_CONFIG = {
     "host": "localhost",
     "port": 8222
 }
+
+postgres = {
+    'user' : os.getenv('PG_USER'),
+    'password' : os.getenv('PG_PSWD'),
+    'host' : os.getenv('PG_HOST'),
+    'port' : int(os.getenv('PG_PORT')),
+    'database' : os.getenv('PG_DBNM')
+}
+
+supabase_rest = f"https://{os.getenv('SUPABASE_REST')}"
+SUPABASE_TOKEN = os.getenv('SUPABASE_TOKEN')
+
+SCHEMA_FILE = ROOT / 'src' / 'database' / 'sql' / 'structure.sql'
+
+MODAL_ENDPOINT= f"https://{os.getenv('MODAL_ENDPOINT')}"
