@@ -1,48 +1,55 @@
 // Composant FAQList : récupère et affiche la liste des FAQ depuis l'API
-'use client'; // Obligatoire car on utilise des hooks
+'use client';
 
-import { useState, useEffect } from 'react';
-import { Card, CardBody, Spinner } from '@heroui/react';
+import { useState, useEffect, useMemo } from 'react';
+import { Card, CardBody, Chip, Spinner, Divider } from '@heroui/react';
 
 export default function FAQList() {
-  // État pour stocker les questions/réponses
   const [faqData, setFaqData] = useState([]);
-  
-  // État pour gérer le chargement
   const [isLoading, setIsLoading] = useState(true);
-  
-  // État pour gérer les erreurs
   const [error, setError] = useState(null);
 
-  // useEffect : s'exécute au chargement du composant
   useEffect(() => {
-    // Fonction pour récupérer les données de l'API
     const fetchFAQ = async () => {
       try {
-        // Appel à l'API FastAPI (à adapter avec votre URL)
         const res = await fetch('/api/FAQ');
-        
+
         if (!res.ok) {
           throw new Error('Erreur lors de la récupération des données');
         }
-        
+
         const data = await res.json();
-        
-        // Stocke les données (selon votre format API : data.faq ou data directement)
         setFaqData(data.faq || data);
-        
       } catch (err) {
         console.error('Erreur API:', err);
         setError(err.message);
       } finally {
-        setIsLoading(false); // Arrête le loader
+        setIsLoading(false);
       }
     };
 
-    fetchFAQ(); // Lance la récupération au chargement
-  }, []); // [] = s'exécute une seule fois au montage du composant
+    fetchFAQ();
+  }, []);
 
-  // Affichage pendant le chargement
+  // Formatte la catégorie pour l'affichage (etat_civil → État civil)
+  const formatCategory = (cat) =>
+    cat
+      .replace(/_/g, ' ')
+      .replace(/^\w/, (c) => c.toUpperCase());
+
+  // Regroupe par catégorie et trie alphabétiquement
+  const groupedFAQ = useMemo(() => {
+    const groups = {};
+    for (const item of faqData) {
+      if (!groups[item.category]) {
+        groups[item.category] = [];
+      }
+      groups[item.category].push(item);
+    }
+
+    return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b, 'fr'));
+  }, [faqData]);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -51,55 +58,75 @@ export default function FAQList() {
     );
   }
 
-  // Affichage en cas d'erreur
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
         <p className="text-red-600 font-semibold">Erreur : {error}</p>
         <p className="text-red-500 text-sm mt-2">
-          Vérifiez que votre API est bien lancée sur http://localhost:8000
+          Vérifiez que votre API est bien lancée.
         </p>
       </div>
     );
   }
 
-  // Affichage si aucune FAQ
   if (faqData.length === 0) {
     return (
       <div className="text-center py-20 text-gray-500">
-        Aucune question disponible pour le moment
+        Aucune question disponible pour le moment.
       </div>
     );
   }
 
-  // Affichage de la liste des FAQ
   return (
-    <div className="space-y-4">
-      {/* space-y-4 : espace entre chaque carte */}
-      
-      {faqData.map((item, index) => (
-        <Card 
-          key={index} 
-          className="bg-white shadow-md hover:shadow-lg transition-shadow"
-        >
-          {/* hover:shadow-lg : ombre plus prononcée au survol */}
-          {/* transition-shadow : animation fluide */}
-          
-          <CardBody className="p-6">
-            {/* Question */}
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">
-              {item.question}
-            </h3>
-            
-            {/* Séparateur */}
-            <div className="border-b border-gray-200 mb-3"></div>
-            
-            {/* Réponse */}
-            <p className="text-gray-700 leading-relaxed">
-              {item.answer}
-            </p>
-          </CardBody>
-        </Card>
+    <div className="space-y-10">
+      {groupedFAQ.map(([category, items]) => (
+        <section key={category}>
+          {/* Séparateur de catégorie */}
+          <div className="flex items-center gap-4 mb-4">
+            <h2 className="text-xl font-bold text-gray-800 whitespace-nowrap">
+              {formatCategory(category)}
+            </h2>
+            <Divider className="flex-1" />
+          </div>
+
+          {/* Cartes de la catégorie */}
+          <div className="space-y-4">
+            {items.map((item) => (
+              <Card
+                key={item.id}
+                className="bg-white shadow-md hover:shadow-lg transition-shadow"
+              >
+                <CardBody className="p-6 space-y-3">
+                  {/* ID */}
+                  <Chip size="sm" variant="flat" color="default">
+                    {item.id}
+                  </Chip>
+
+                  {/* Question */}
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    {item.question}
+                  </h3>
+
+                  <Divider />
+
+                  {/* Réponse */}
+                  <p className="text-gray-700 leading-relaxed">
+                    {item.answer}
+                  </p>
+
+                  {/* Mots-clés */}
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {item.keywords.map((kw) => (
+                      <Chip key={kw} size="sm" variant="dot" color="secondary">
+                        {kw}
+                      </Chip>
+                    ))}
+                  </div>
+                </CardBody>
+              </Card>
+            ))}
+          </div>
+        </section>
       ))}
     </div>
   );

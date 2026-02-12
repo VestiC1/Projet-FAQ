@@ -1,60 +1,70 @@
-// Composant Chat : gestion des questions/réponses
-'use client'; // Obligatoire car on utilise des hooks (useState)
+// Composant Chat : gestion des questions/réponses en streaming
+'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Input, Button } from '@heroui/react';
+import ReactMarkdown from 'react-markdown';
 
 export default function Chat() {
-  // État pour stocker la question de l'utilisateur
   const [question, setQuestion] = useState('');
-  
-  // État pour stocker la réponse de l'API
   const [response, setResponse] = useState('');
-  
-  // État pour gérer le chargement (afficher un loader pendant l'appel API)
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fonction appelée quand l'utilisateur clique sur "Envoyer"
+  // Ref pour auto-scroll vers le bas pendant le streaming
+  const responseRef = useRef(null);
+
+  // Auto-scroll pendant le streaming
+  useEffect(() => {
+    if (responseRef.current) {
+      responseRef.current.scrollTop = responseRef.current.scrollHeight;
+    }
+  }, [response]);
+
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Empêche le rechargement de la page
-    
-    // Validation : ne rien faire si le champ est vide
+    e.preventDefault();
     if (!question.trim()) return;
-    
-    setIsLoading(true); // Active le loader
-    
+
+    setIsLoading(true);
+    setResponse(''); // Reset la réponse précédente
+
     try {
-      // Appel à l'API FastAPI (à adapter avec votre URL)
-      const res = await fetch('/api/answer', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/answer/stream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ question: question }),
+        body: JSON.stringify({ question }),
       });
-      
-      const data = await res.json();
-      
-      // Stocke la réponse
-      setResponse(data.answer || 'Aucune réponse trouvée.');
-      
+
+      if (!res.ok) {
+        throw new Error(`Erreur HTTP: ${res.status}`);
+      }
+
+      // Lecture du stream token par token
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        setResponse((prev) => prev + chunk);
+        await new Promise((r) => setTimeout(r, 75));
+      }
     } catch (error) {
-      console.error('Erreur lors de l\'appel API:', error);
+      console.error("Erreur lors de l'appel API:", error);
       setResponse('Erreur lors de la récupération de la réponse.');
     } finally {
-      setIsLoading(false); // Désactive le loader
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* space-y-6 : espace vertical entre les éléments */}
-      
       {/* Carte blanche pour le formulaire */}
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
         <form onSubmit={handleSubmit} className="space-y-4">
-          
-          {/* Champ de saisie */}
           <Input
             type="text"
             label="Posez votre question"
@@ -66,12 +76,11 @@ export default function Chat() {
             className="w-full"
             disabled={isLoading}
             classNames={{
-              input: "bg-gray-50",
-              inputWrapper: "border-gray-300 hover:border-gray-400"
+              input: 'bg-gray-50',
+              inputWrapper: 'border-gray-300 hover:border-gray-400',
             }}
           />
-          
-          {/* Bouton d'envoi */}
+
           <Button
             type="submit"
             color="primary"
@@ -84,16 +93,19 @@ export default function Chat() {
           </Button>
         </form>
       </div>
-      
-      {/* Affichage de la réponse */}
+
+      {/* Affichage de la réponse en markdown */}
       {response && (
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+        <div
+          ref={responseRef}
+          className="bg-white rounded-lg shadow-md p-6 border border-gray-200 max-h-[60vh] overflow-y-auto"
+        >
           <h3 className="text-lg font-semibold text-gray-800 mb-3">
             Réponse :
           </h3>
-          <p className="text-gray-700 leading-relaxed">
-            {response}
-          </p>
+          <div className="prose prose-gray max-w-none text-gray-700">
+            <ReactMarkdown>{response}</ReactMarkdown>
+          </div>
         </div>
       )}
     </div>

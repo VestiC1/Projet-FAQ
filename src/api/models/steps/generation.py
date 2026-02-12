@@ -19,7 +19,7 @@ class LLMChatCompletion(Model):
         ]
 
         if stream == True: 
-            token_stream= self.client.chat_completion(
+            token_stream = self.client.chat_completion(
                 messages=messages, 
                 max_tokens=self.max_tokens,
                 temperature=0.05,
@@ -28,9 +28,10 @@ class LLMChatCompletion(Model):
 
             def generate():
                 for chunk in token_stream:
-                    token = chunk.choices[0].delta.content
-                    if token:
-                        yield token
+                    if chunk.choices:
+                        token = chunk.choices[0].delta.content
+                        if token:
+                            yield token
             return generate()
         
         return self.client.chat_completion(

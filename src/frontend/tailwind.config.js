@@ -15,5 +15,7 @@ module.exports = {
     extend: {},
   },
   darkMode: "class", // Active le mode sombre avec une classe CSS
-  plugins: [heroui()], // Active le plugin Hero UI
+  plugins: [heroui(),
+  require("@tailwindcss/typography"),  // ← add this
+  ], // Active le plugin Hero UI
 };
