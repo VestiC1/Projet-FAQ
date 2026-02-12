@@ -34,3 +34,12 @@ dev = [
     "tiktoken>=0.12.0",
     "transformers>=4.57.5",
 ]
+
+api = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "python-dotenv",
+    "supabase"
+    # only what the backend needs
+]
