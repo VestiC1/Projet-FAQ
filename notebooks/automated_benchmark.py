@@ -89,7 +89,7 @@ def _(df):
 
 @app.cell
 def _():
-    target_latency  = 2.0
+    target_latency  = 2
     return (target_latency,)
 
 
@@ -113,7 +113,7 @@ def _(df_f):
 
 @app.cell
 def _(df_f):
-    df_f.columns = ['No Hallucination', 'Pertinence', 'Exactitude', 'Simplicité', 'Latence']
+    df_f.columns = ['Fidélité', 'Pertinence', 'Exactitude', 'Maintenabilité', 'Rapidité']
     return
 
 
@@ -123,9 +123,9 @@ def _(np, pd):
         df_weight = {
             'Exactitude' : 0.3,
             'Pertinence' : 0.2,
-            'No Hallucination' : 0.2, 
-            'Simplicité' : 0.15,
-            'Latence' : 0.15,
+            'Fidélité' : 0.2, 
+            'Maintenabilité' : 0.15,
+            'Rapidité' : 0.15,
         }
         df_gs = pd.DataFrame({
             strategy : [] for strategy in df.columns
@@ -153,6 +153,8 @@ def _(df_gs, plt, sns):
     plt.title('Comparaison des scores globaux')
     plt.ylabel('Stratégies')
     plt.xlabel('Score Global')
+    plt.xlim(0,1)
+    plt.show()
     return
 
 
@@ -170,7 +172,7 @@ def _(np, plt):
         for strategy in strategies:
             values = df[strategy].tolist()
             values += values[:1]
-            ax.plot(angles, values, label=strategy)
+            ax.plot(angles, values, label=strategy, alpha=0.8)
             ax.fill(angles, values, alpha=0.1)
 
         ax.set_xticks(angles[:-1])
@@ -180,13 +182,13 @@ def _(np, plt):
         ax.set_rlabel_position(30)
 
         # Add padding to metric labels
-        ax.tick_params(axis='x', pad=15)
+        ax.tick_params(axis='x', pad=20)
 
         # Start from top instead of right
         ax.set_theta_offset(np.pi / 2)
         ax.set_theta_direction(-1)
 
-        ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1))
+        ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1), frameon=False)
 
         plt.tight_layout()
         return fig, ax
@@ -196,7 +198,7 @@ def _(np, plt):
 @app.cell
 def _(df_f, plt, radar_plot):
     fig, ax = radar_plot(df_f.transpose())
-    plt.title('Métriques')
+    #plt.title('Métriques')
     plt.show()
     return
 

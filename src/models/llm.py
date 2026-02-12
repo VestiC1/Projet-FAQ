@@ -20,4 +20,26 @@ class LLMChatCompletion(Model):
             messages=messages, 
             max_tokens=self.max_tokens,
             temperature=0.05
-        ).choices[0].message['content'].strip(), "Aucun contexte fourni." if context == "" else context
+        ).choices[0].message['content'].strip(), prompt if context == "" else context
+    
+    def predict_streamed(self, query: str, context: str = ""):
+        prompt = self.prompt_template.format(context=context, query=query)
+        
+        messages = [
+            {"role": "user", "content": prompt}
+        ]
+
+        stream = self.client.chat_completion(
+            messages=messages, 
+            max_tokens=self.max_tokens,
+            temperature=0.05,
+            stream=True
+        )
+
+        def generate():
+            for chunk in stream:
+                token = chunk.choices[0].delta.content
+                if token:
+                    yield token
+
+        return generate()
