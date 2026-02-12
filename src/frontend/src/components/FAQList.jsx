@@ -70,7 +70,7 @@ export default function FAQList() {
         <section key={category}>
           {/* Séparateur de catégorie */}
           <div className="flex items-center gap-4 mb-4">
-            <h2 className="text-xl font-bold text-indigo-600 whitespace-nowrap">
+            <h2 className="text-xl font-bold text-blue-600 whitespace-nowrap">
               {formatCategory(category)}
             </h2>
             <Divider className="flex-1" />
@@ -81,7 +81,7 @@ export default function FAQList() {
             {items.map((item) => (
               <Card
                 key={item.id}
-                className="bg-white shadow-md hover:shadow-lg transition-shadow"
+                className="bg-white shadow-md hover:shadow-blue-200 hover:shadow-lg transition-shadow"
               >
                 <CardBody className="p-0">
                   <div className="flex flex-row items-stretch">
@@ -104,13 +104,9 @@ export default function FAQList() {
                         {item.answer}
                       </p>
 
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {item.keywords.map((kw) => (
-                          <Chip key={kw} size="sm" variant="dot" color="secondary">
-                            {kw}
-                          </Chip>
-                        ))}
-                      </div>
+                      <p className="text-sm italic text-gray-500 pt-1">
+                        {item.keywords.join(', ')}
+                      </p>
                     </div>
                   </div>
                 </CardBody>
