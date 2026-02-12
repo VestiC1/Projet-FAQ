@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from .routes import router
 import json
 from fastapi.middleware.cors import CORSMiddleware
-
+from config import FRONTEND_HOST
 
 app = FastAPI(
     title="Assistant FAQ Intelligent pour Collectivité Territoriale",
@@ -14,7 +14,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://{FRONTEND_HOST}"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
