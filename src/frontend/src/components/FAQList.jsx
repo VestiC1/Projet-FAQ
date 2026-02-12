@@ -1,4 +1,3 @@
-// Composant FAQList : récupère et affiche la liste des FAQ depuis l'API
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -13,11 +12,7 @@ export default function FAQList() {
     const fetchFAQ = async () => {
       try {
         const res = await fetch('/api/FAQ');
-
-        if (!res.ok) {
-          throw new Error('Erreur lors de la récupération des données');
-        }
-
+        if (!res.ok) throw new Error('Erreur lors de la récupération des données');
         const data = await res.json();
         setFaqData(data.faq || data);
       } catch (err) {
@@ -27,28 +22,30 @@ export default function FAQList() {
         setIsLoading(false);
       }
     };
-
     fetchFAQ();
   }, []);
 
-  // Formatte la catégorie pour l'affichage (etat_civil → État civil)
   const formatCategory = (cat) =>
-    cat
-      .replace(/_/g, ' ')
-      .replace(/^\w/, (c) => c.toUpperCase());
+    cat.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
 
-  // Regroupe par catégorie et trie alphabétiquement
   const groupedFAQ = useMemo(() => {
     const groups = {};
     for (const item of faqData) {
-      if (!groups[item.category]) {
-        groups[item.category] = [];
-      }
+      if (!groups[item.category]) groups[item.category] = [];
       groups[item.category].push(item);
     }
-
     return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b, 'fr'));
   }, [faqData]);
+
+  const Keywords = ({ keywords }) => (
+    <div className="flex flex-wrap gap-1.5 mt-2">
+      {keywords.map((kw) => (
+        <Chip key={kw} size="sm" variant="dot" color="secondary">
+          {kw}
+        </Chip>
+      ))}
+    </div>
+  );
 
   if (isLoading) {
     return (
@@ -89,38 +86,37 @@ export default function FAQList() {
             <Divider className="flex-1" />
           </div>
 
-          {/* Cartes de la catégorie */}
-          <div className="space-y-4">
+          {/* Cartes en row */}
+          <div className="space-y-3">
             {items.map((item) => (
               <Card
                 key={item.id}
                 className="bg-white shadow-md hover:shadow-lg transition-shadow"
               >
-                <CardBody className="p-6 space-y-3">
-                  {/* ID */}
-                  <Chip size="sm" variant="flat" color="default">
-                    {item.id}
-                  </Chip>
-
-                  {/* Question */}
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {item.question}
-                  </h3>
-
-                  <Divider />
-
-                  {/* Réponse */}
-                  <p className="text-gray-700 leading-relaxed">
-                    {item.answer}
-                  </p>
-
-                  {/* Mots-clés */}
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {item.keywords.map((kw) => (
-                      <Chip key={kw} size="sm" variant="dot" color="secondary">
-                        {kw}
+                <CardBody className="p-0">
+                  <div className="flex flex-row items-stretch">
+                    {/* ID */}
+                    <div className="flex items-center justify-center px-5 py-4 bg-gray-50 border-r border-gray-200 min-w-[80px]">
+                      <Chip size="sm" variant="flat" color="default">
+                        {item.id}
                       </Chip>
-                    ))}
+                    </div>
+
+                    {/* Question + mots-clés */}
+                    <div className="flex flex-col justify-center px-5 py-4 border-r border-gray-200 w-1/3 min-w-[200px]">
+                      <h3 className="text-base font-semibold text-gray-800">
+                        {item.question}
+                      </h3>
+                      <Keywords keywords={item.keywords} />
+                    </div>
+
+                    {/* Réponse + mots-clés */}
+                    <div className="flex-1 flex flex-col justify-center px-5 py-4">
+                      <p className="text-gray-700 leading-relaxed">
+                        {item.answer}
+                      </p>
+                      <Keywords keywords={item.keywords} />
+                    </div>
                   </div>
                 </CardBody>
               </Card>
