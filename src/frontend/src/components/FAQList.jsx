@@ -81,7 +81,7 @@ export default function FAQList() {
             {items.map((item) => (
               <Card
                 key={item.id}
-                className="bg-white shadow-md hover:shadow-blue-200 hover:shadow-lg transition-shadow"
+                className="bg-white shadow-md hover:shadow-blue-500 hover:shadow-lg transition-shadow"
               >
                 <CardBody className="p-0">
                   <div className="flex flex-row items-stretch">
