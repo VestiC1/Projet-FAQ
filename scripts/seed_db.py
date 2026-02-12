@@ -1,7 +1,7 @@
 import asyncio
 from config import postgres, SCHEMA_FILE, FAQ_PATH
 import asyncpg
-from src.api.db.load import load_faq
+from src.api.services import get_faq
 from src.database.crud import create_schema, insert_document
 
 async def main():
@@ -12,7 +12,7 @@ async def main():
         print("Schema applied")
 
         # Loading FAQ
-        faq_json = load_faq(faq_path=FAQ_PATH)
+        faq_json = get_faq(faq_path=FAQ_PATH)
 
         # Inserting documents one by one
         inserted = 0

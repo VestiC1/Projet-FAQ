@@ -91,4 +91,9 @@ postgres = {
     'database' : os.getenv('PG_DBNM')
 }
 
+supabase_rest = f"https://{os.getenv('SUPABASE_REST')}"
+SUPABASE_TOKEN = os.getenv('SUPABASE_TOKEN')
+
 SCHEMA_FILE = ROOT / 'src' / 'database' / 'sql' / 'structure.sql'
+
+MODAL_ENDPOINT= f"https://{os.getenv('MODAL_ENDPOINT')}"

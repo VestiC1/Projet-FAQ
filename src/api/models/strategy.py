@@ -1,30 +1,33 @@
 from pathlib import Path
-from .steps import LLMChatCompletion, TinyRag
-from config import embd_model_name, RAG_K, system_prompt_template, LLMNAME, HF_TOKEN, FAQ_VEC
+from .steps import LLMChatCompletion, RetreivalService
+from config import RAG_K, system_prompt_template, HF_TOKEN, MODAL_ENDPOINT, LLMNAME
 from .abstract import Strategy
+from pprint import pprint
+
 
 class RAG(Strategy):
 
-    def __init__(self, hf_token: str, model_name: str, system_prompt: str, max_tokens: int, corpus:Path, vec_name: str, top_k: int, *args, **kwargs):
+    def __init__(self, hf_token: str, model_name: str, system_prompt: str, max_tokens: int, endpoint:str, top_k: int, *args, **kwargs):
         super().__init__(strategy_name='RAG')
 
         self.llm = LLMChatCompletion(hf_token=hf_token, model_name=model_name, prompt_template=system_prompt, max_tokens=max_tokens)
-        self.rag = TinyRag(model_name=vec_name, corpus=corpus, k=top_k)
+        self.rag = RetreivalService(endpoint=endpoint, k=top_k)
 
-    def _answer(self, question: str) -> str:
+    def _answer(self, question: str, stream:bool=False) -> str:
 
         documents = self.rag.search(text=question)
         context_text = self._build_context(documents=documents)
 
-        return self.llm.predict(query=question, context=context_text)
+        return self.llm.predict(query=question, context=context_text, stream=stream)
     
     def _build_context(self, documents) -> str:
+
         context_text = "\n----------".join([f"""
                 Document [{row['id']}]
                 {row['answer']}
                 Mots clés : {row['keywords']}
             """ 
-            for _, row in documents.iterrows()
+            for row in documents
         ])
         return context_text
 
@@ -35,14 +38,13 @@ def main():
         model_name=LLMNAME,
         system_prompt=system_prompt_template['B'],
         max_tokens=200,
-        corpus=FAQ_VEC,
-        vec_name=embd_model_name,
+        endpoint=MODAL_ENDPOINT,
         top_k=RAG_K
     )
 
     question = "Quelles sont les démarches pour déclarer une naissance ?"
     
-    answer = strat.answer(question=question)
+    answer = strat.answer(question=question, stream=False)
     
     print(answer)
 

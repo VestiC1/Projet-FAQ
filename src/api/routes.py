@@ -1,26 +1,13 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 from fastapi.responses import JSONResponse
-from src.app.db.load import load_faq, get_document
-from src.app.models import RAG
-from config import FAQ_PATH
-from config import embd_model_name, RAG_K, system_prompt_template, LLMNAME, HF_TOKEN, FAQ_VEC
-
+from src.api.services import get_faq, get_document
+from .dependencies import get_supabase, get_rag
+from supabase import Client
 from pydantic import BaseModel
 
 class Query(BaseModel):
     question: str
 
-faq_json=load_faq(faq_path=FAQ_PATH)
-
-rag = RAG(
-        hf_token=HF_TOKEN,
-        model_name=LLMNAME,
-        system_prompt=system_prompt_template['B'],
-        max_tokens=200,
-        corpus=FAQ_VEC,
-        vec_name=embd_model_name,
-        top_k=RAG_K
-    )
 
 router = APIRouter()
 
@@ -33,16 +20,16 @@ async def health(request: Request):
     return JSONResponse(content={"status":"OK"})
 
 @router.post("/answer", tags=[""], response_class=JSONResponse)
-async def answer(request: Request, query:Query):
-    answer, _ = rag.answer(question=query.question)
+async def answer(request: Request, query:Query, rag=Depends(get_rag)):
+    answer = rag.answer(question=query.question, stream=False)
     return JSONResponse(content={"answer":answer})
 
 @router.get("/FAQ", tags=[""], response_class=JSONResponse)
-async def faq(request: Request):
-    return JSONResponse(content={"faq":faq_json["faq"]})
+async def faq(request: Request, sb: Client= Depends(get_supabase)):
+    return JSONResponse(content={"faq": get_faq(sb=sb)})
 
 @router.get("/documents/{id}", tags=[""], response_class=JSONResponse)
-async def docs(request: Request, id):
+async def docs(request: Request, id, sb: Client= Depends(get_supabase)):
     return JSONResponse(content={
-        "document": get_document(faq_json=faq_json, id=id)
+        "document": get_document(sb=sb, id=id)
     })

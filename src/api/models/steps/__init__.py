@@ -1,7 +1,7 @@
 from .generation import LLMChatCompletion
-from .retrieval import TinyRag
+from .retrieval import RetreivalService
 
 __all__ = [
     'LLMChatCompletion',
-    'TinyRag'
+    'RetreivalService'
 ]
