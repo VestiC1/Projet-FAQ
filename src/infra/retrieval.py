@@ -20,11 +20,13 @@ async def retrieve(item: dict):
     service = EmbeddingService()
     embedding = service.embed.remote(query)
 
+    embedding_str = "[" + ",".join(str(x) for x in embedding) + "]"
+
     conn = await asyncpg.connect(get_db_url(), statement_cache_size=0)
     try:
         rows = await conn.fetch(
             "SELECT * FROM match_documents($1, $2, $3)",
-            embedding,
+            embedding_str,
             top_k,
             threshold,
         )

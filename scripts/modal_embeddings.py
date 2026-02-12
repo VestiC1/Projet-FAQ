@@ -1,28 +1,34 @@
 import asyncio
 import json
-import os
 
+from config import postgres
 import asyncpg
 import modal
+
+def format_document(document):
+    text = f"passage: {document['question']} {document['answer']} {document['keywords']}"
+
+    return text
 
 
 async def main():
     # Call your Modal embedding service
     EmbeddingService = modal.Cls.from_name("retrieval-service", "EmbeddingService")
 
-    conn = await asyncpg.connect(os.environ["SUPABASE_DB_URL"])
+    conn = await asyncpg.connect(**postgres)
 
     try:
         # Fetch documents without embeddings
         rows = await conn.fetch(
-            "SELECT id, text FROM documents WHERE embedding IS NULL"
+            "SELECT id, content FROM documents WHERE embedding IS NULL"
         )
         print(f"Found {len(rows)} documents to embed")
 
         for row in rows:
             # Call Modal remotely
-            embedding = EmbeddingService().embed.remote(row["text"])
-
+            text = format_document(json.loads(row['content']))
+            embedding = EmbeddingService().embed.remote(text)
+            
             await conn.execute(
                 "UPDATE documents SET embedding = $1 WHERE id = $2",
                 json.dumps(embedding),

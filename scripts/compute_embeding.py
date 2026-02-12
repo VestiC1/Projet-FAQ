@@ -1,4 +1,4 @@
-from src.utils import load_faq
+from src.core.utils import load_faq
 from sentence_transformers import SentenceTransformer
 from config import FAQ_VEC, embd_model_name
 import pandas as pd
