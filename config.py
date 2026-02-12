@@ -97,3 +97,5 @@ SUPABASE_TOKEN = os.getenv('SUPABASE_TOKEN')
 SCHEMA_FILE = ROOT / 'src' / 'database' / 'sql' / 'structure.sql'
 
 MODAL_ENDPOINT= f"https://{os.getenv('MODAL_ENDPOINT')}"
+
+FRONTEND_HOST=os.getenv("FRONTEND_HOST")
