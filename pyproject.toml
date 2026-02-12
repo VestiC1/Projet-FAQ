@@ -40,6 +40,7 @@ api = [
     "uvicorn",
     "pydantic",
     "python-dotenv",
-    "supabase"
+    "supabase",
+    "huggingface_hub",
     # only what the backend needs
 ]

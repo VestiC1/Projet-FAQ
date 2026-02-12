@@ -24,7 +24,9 @@ click==8.3.1
     #   pyiceberg
     #   uvicorn
 colorama==0.4.6 ; sys_platform == 'win32'
-    # via click
+    # via
+    #   click
+    #   tqdm
 cryptography==46.0.4
     # via pyjwt
 deprecation==2.1.0
@@ -34,14 +36,20 @@ deprecation==2.1.0
 exceptiongroup==1.3.1 ; python_full_version < '3.11'
     # via anyio
 fastapi==0.128.7
+filelock==3.20.3
+    # via huggingface-hub
 fsspec==2025.10.0
-    # via pyiceberg
+    # via
+    #   huggingface-hub
+    #   pyiceberg
 h11==0.16.0
     # via
     #   httpcore
     #   uvicorn
 h2==4.3.0
     # via httpx
+hf-xet==1.2.0 ; platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'x86_64'
+    # via huggingface-hub
 hpack==4.1.0
     # via h2
 httpcore==1.0.9
@@ -53,6 +61,7 @@ httpx==0.28.1
     #   supabase
     #   supabase-auth
     #   supabase-functions
+huggingface-hub==0.36.0
 hyperframe==6.1.0
     # via h2
 idna==3.11
@@ -70,7 +79,9 @@ mmh3==5.2.0
 multidict==6.7.1
     # via yarl
 packaging==25.0
-    # via deprecation
+    # via
+    #   deprecation
+    #   huggingface-hub
 postgrest==2.28.0
     # via supabase
 propcache==0.4.1
@@ -100,10 +111,14 @@ pyroaring==1.0.3
 python-dateutil==2.9.0.post0
     # via strictyaml
 python-dotenv==1.2.1
+pyyaml==6.0.3
+    # via huggingface-hub
 realtime==2.28.0
     # via supabase
 requests==2.32.5
-    # via pyiceberg
+    # via
+    #   huggingface-hub
+    #   pyiceberg
 rich==14.3.2
     # via pyiceberg
 six==1.17.0
@@ -125,12 +140,15 @@ supabase-functions==2.28.0
     # via supabase
 tenacity==9.1.4
     # via pyiceberg
+tqdm==4.67.1
+    # via huggingface-hub
 typing-extensions==4.15.0
     # via
     #   anyio
     #   cryptography
     #   exceptiongroup
     #   fastapi
+    #   huggingface-hub
     #   multidict
     #   pydantic
     #   pydantic-core

@@ -3592,6 +3592,7 @@ dependencies = [
 [package.dev-dependencies]
 api = [
     { name = "fastapi" },
+    { name = "huggingface-hub" },
     { name = "pydantic" },
     { name = "python-dotenv" },
     { name = "supabase" },
@@ -3632,6 +3633,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 api = [
     { name = "fastapi" },
+    { name = "huggingface-hub" },
     { name = "pydantic" },
     { name = "python-dotenv" },
     { name = "supabase" },
