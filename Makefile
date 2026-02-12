@@ -27,3 +27,6 @@ app:
 
 deploy:
 	modal deploy -m src.infra.app
+
+requirements.txt:
+	uv pip compile pyproject.toml -o requirements.txt
