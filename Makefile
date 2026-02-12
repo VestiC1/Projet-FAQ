@@ -24,3 +24,6 @@ evaluate:
 
 app:
 	python -m scripts.run_api
+
+deploy:
+	modal deploy -m src.infra.app
