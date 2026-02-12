@@ -3590,6 +3590,13 @@ dependencies = [
 ]
 
 [package.dev-dependencies]
+api = [
+    { name = "fastapi" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "supabase" },
+    { name = "uvicorn" },
+]
 dev = [
     { name = "ipython", version = "8.38.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "ipython", version = "9.9.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
@@ -3623,6 +3630,13 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
+api = [
+    { name = "fastapi" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "supabase" },
+    { name = "uvicorn" },
+]
 dev = [
     { name = "ipython", specifier = ">=8.38.0" },
     { name = "marimo", specifier = ">=0.19.2" },
