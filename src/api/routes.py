@@ -28,7 +28,11 @@ async def answer(request: Request, query:Query, rag=Depends(get_rag)):
 async def answer_stream(request: Request, query: Query, rag=Depends(get_rag)):
     return StreamingResponse(
         rag.answer(question=query.question, stream=True),
-        media_type="text/plain; charset=utf-8",
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
     )
 
 @router.get("/FAQ", tags=[""], response_class=JSONResponse)

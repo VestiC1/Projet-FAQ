@@ -1,0 +1,6 @@
+/* Imports Tailwind obligatoires */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Pas de style supplémentaire ici, tout sera fait avec les classes Tailwind directement dans les composants */
