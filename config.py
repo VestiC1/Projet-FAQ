@@ -38,7 +38,7 @@ RAG_K = 10
 # Model
 LLMNAME="mistralai/Mistral-7B-Instruct-v0.2"
 
-qna_model_name = "timpal0l/mdeberta-v3-base-squad2"
+qna_model_name = "etalab-ia/camembert-base-squadFR-fquad-piaf"#"timpal0l/mdeberta-v3-base-squad2"
 
 system_prompt_template = {
     'A' : """
