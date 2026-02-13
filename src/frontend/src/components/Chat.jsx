@@ -77,15 +77,22 @@ export default function Chat() {
             disabled={isLoading}
             classNames={{
               input: 'bg-gray-50',
-              inputWrapper: 'border-gray-300 hover:border-gray-400',
+              inputWrapper: [
+                'border-gray-300',
+                'hover:border-blue-400',
+                'focus-within:!border-blue-500',
+                'group-data-[focus=true]:!border-blue-500',
+                'transition-colors',
+              ],
+              label: 'text-gray-500 group-data-[focus=true]:text-blue-500',
             }}
           />
 
           <Button
             type="submit"
-            color="primary"
             size="lg"
-            className="w-full font-semibold"
+            variant="bordered"
+            className="w-full font-semibold border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
             isLoading={isLoading}
             disabled={isLoading || !question.trim()}
           >
