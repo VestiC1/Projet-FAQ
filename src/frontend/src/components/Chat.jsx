@@ -80,10 +80,14 @@ export default function Chat() {
               inputWrapper: [
                 'border-gray-300',
                 'hover:border-blue-400',
-                'focus-within:!border-blue-500',
+                '!border-blue-500',
                 'group-data-[focus=true]:!border-blue-500',
+                'group-data-[focus-visible=true]:!ring-blue-500',
+                'group-data-[focus-visible=true]:!ring-offset-0',
+                'group-data-[focus=true]:!shadow-none',
+                'after:!bg-blue-500',
                 'transition-colors',
-              ],
+              ].join(' '),
               label: 'text-gray-500 group-data-[focus=true]:text-blue-500',
             }}
           />
