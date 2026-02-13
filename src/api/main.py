@@ -6,7 +6,7 @@ from config import FRONTEND_HOST
 
 app = FastAPI(
     title="Assistant FAQ Intelligent pour Collectivité Territoriale",
-    description="AConcevoir, développer et déployer une API d'assistance FAQ intégrant un LLM, en suivant une démarche rigoureuse de benchmark pour sélectionner la meilleure approche technique.",
+    description="API d'assistance FAQ intégrant un RAG pour obtenir une réponse rigoureuse.",
     version="1.0.0"
 )
 
