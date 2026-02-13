@@ -25,7 +25,7 @@ jobs:
         run: uv pip install modal --system
 
       - name: Deploy to Modal
-        run: modal deploy src/infra/app.py
+        run: python -m modal deploy src.infra.app
         env:
           MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
           MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
