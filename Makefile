@@ -31,3 +31,7 @@ deploy:
 requirements.txt:
 	uv export --only-group api --no-hashes --no-annotate -o requirements.txt
 	sed -i 's/ ;.*//g' requirements.txt
+
+test:
+	python -m pytest tests/core/ -v -W ignore::DeprecationWarning
+	python -m pytest tests/api/ -v -W ignore::DeprecationWarning

@@ -1,4 +1,4 @@
-from src.models import TinyRag, QnAExtractor
+from src.core.models import TinyRag, QnAExtractor
 from config import qna_model_name, embd_model_name, RAG_K, FAQ_VEC
 from pathlib import Path
 from .abstract import Strategy
