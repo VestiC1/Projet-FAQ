@@ -1,0 +1,47 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ main, staging ]
+
+jobs:
+  test:
+    name: Run Python Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "${HOME}/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: |
+        uv sync --all-extras
+
+    - name: Run tests
+      shell: bash
+      run: |
+        source .venv/bin/activate  # Active l'environnement virtuel (si uv en crée un)
+        PYTHONPATH=src python -m pytest tests/ -v -W ignore::DeprecationWarning --ignore=tests/core/strategies
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        MISTRAL_TOKEN: ${{ secrets.MISTRAL_TOKEN }}
+        GEMINI_TOKEN: ${{ secrets.GEMINI_TOKEN }}
+        SUPABASE_TOKEN: ${{ secrets.SUPABASE_TOKEN }}
+        SUPABASE_REST: ${{ secrets.SUPABASE_REST }}
+        PG_USER: ${{ secrets.PG_USER }}
+        PG_PSWD: ${{ secrets.PG_PSWD }}
+        PG_HOST: ${{ secrets.PG_HOST }}
+        PG_PORT: ${{ secrets.PG_PORT }}
+        PG_DBNM: ${{ secrets.PG_DBNM }}
+        MODAL_ENDPOINT: ${{ secrets.MODAL_ENDPOINT }}
+        FRONTEND_HOST: ${{ secrets.FRONTEND_HOST }}
