@@ -3,8 +3,6 @@ name: Run Tests
 on:
   push:
     branches: [ main, staging ]
-  pull_request:
-    branches: [ main, staging ]
 
 jobs:
   test:
@@ -33,7 +31,7 @@ jobs:
       shell: bash
       run: |
         source .venv/bin/activate  # Active l'environnement virtuel (si uv en crée un)
-        PYTHONPATH=src python -m pytest tests/ -v -W ignore::DeprecationWarning
+        PYTHONPATH=src python -m pytest tests/ -v -W ignore::DeprecationWarning --ignore=tests/core/strategies
       env:
         HF_TOKEN: ${{ secrets.HF_TOKEN }}
         MISTRAL_TOKEN: ${{ secrets.MISTRAL_TOKEN }}

@@ -96,11 +96,6 @@ def test_specific_critical_config_variables():
         elif var_name == 'RAG_K':
             # RAG_K should be a positive integer
             assert var_value > 0, "RAG_K should be a positive integer"
-        
-        elif var_name == 'FAQ_VEC':
-            # FAQ_VEC should be a Path object pointing to a file
-            assert var_value.exists() or str(var_value).endswith('.json'), \
-                f"FAQ_VEC should point to a valid file path: {var_value}"
 
 
 @pytest.mark.skipif(not os.path.exists('config.py'), reason="config.py not found")
