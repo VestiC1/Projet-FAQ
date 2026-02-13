@@ -1,0 +1,31 @@
+# .github/workflows/deploy-infra.yml
+name: Deploy to Modal
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/infra/**"
+      - ".github/workflows/deploy-infra.yml"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh && echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: uv pip install modal --system
+
+      - name: Deploy to Modal
+        run: python -m modal deploy src.infra.app
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
