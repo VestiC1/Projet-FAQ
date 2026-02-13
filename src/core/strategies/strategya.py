@@ -1,4 +1,4 @@
-from src.models import LLMChatCompletion
+from src.core.models import LLMChatCompletion
 from config import HF_TOKEN, LLMNAME, system_prompt_template
 from .abstract import Strategy
 

@@ -1,5 +1,5 @@
 from pathlib import Path
-from src.models import LLMChatCompletion, TinyRag
+from src.core.models import LLMChatCompletion, TinyRag
 from config import embd_model_name, RAG_K, system_prompt_template, LLMNAME, HF_TOKEN, FAQ_VEC
 from .abstract import Strategy
 
