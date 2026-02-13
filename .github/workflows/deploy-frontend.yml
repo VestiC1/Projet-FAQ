@@ -2,11 +2,10 @@
 name: Deploy Frontend to Vercel
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Run Tests"]
+    types: [completed]
     branches: [main]
-    paths:
-      - "src/frontend/**"
-      - ".github/workflows/deploy-frontend.yml"
 
 jobs:
   deploy:
