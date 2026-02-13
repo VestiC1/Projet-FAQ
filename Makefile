@@ -33,5 +33,4 @@ requirements.txt:
 	sed -i 's/ ;.*//g' requirements.txt
 
 test:
-	python -m pytest tests/core/ -v -W ignore::DeprecationWarning
-	python -m pytest tests/api/ -v -W ignore::DeprecationWarning
+	python -m pytest tests/ -v -W ignore::DeprecationWarning
